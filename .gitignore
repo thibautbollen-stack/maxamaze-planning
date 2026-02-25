@@ -1,0 +1,23 @@
+# Alleen index.html en deploy workflow horen in deze repo
+# Al het andere is prive en mag NOOIT op GitHub
+
+MEMORY.md
+memory/
+Planning 2026.md
+TODO.md
+projects.md
+rentman_cache.md
+crew.md
+AGENTS.md
+SOUL.md
+HEARTBEAT.md
+BOOTSTRAP.md
+IDENTITY.md
+TOOLS.md
+USER.md
+.openclaw/
+*.md
+!README.md
+
+# Lokale OS bestanden
+.DS_Store

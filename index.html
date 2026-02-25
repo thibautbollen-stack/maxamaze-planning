@@ -1,0 +1,3172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxamaze Planning 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #E8B84B;
+    --gold-light: #f5d27a;
+    --gold-dark: #c99a30;
+    --navy: #0D1B2A;
+    --navy-mid: #152232;
+    --navy-card: #1a2d42;
+    --navy-border: #243d57;
+    --text: #e8edf3;
+    --text-muted: #8ba3bc;
+    --text-dim: #5a7a96;
+    --red: #e05252;
+    --red-bg: #2a1515;
+    --green: #4ecb71;
+    --green-bg: #0f2a1a;
+    --blue: #4e9ecb;
+    --blue-bg: #0f1e2a;
+    --orange: #e8954b;
+    --orange-bg: #2a1a0f;
+    --purple: #9b59b6;
+    --purple-bg: #1e0f2a;
+    --teal: #1abc9c;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── PASSWORD GATE ─── */
+  #pw-gate {
+    position: fixed;
+    inset: 0;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .pw-logo {
+    text-align: center;
+  }
+
+  .pw-logo .brand {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .pw-logo .sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  .pw-box {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius);
+    padding: 32px;
+    width: min(380px, 90vw);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pw-box h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .pw-box input {
+    background: var(--navy);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+
+  .pw-box input:focus { border-color: var(--gold); }
+  .pw-box input.error { border-color: var(--red); animation: shake 0.3s; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .pw-btn {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .pw-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .pw-btn:active { transform: translateY(0); }
+
+  /* ─── MAIN APP ─── */
+  #app { display: none; min-height: 100vh; }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .header-sub {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  /* ─── NAV TABS ─── */
+  nav {
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--navy-border);
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  /* ─── CONTENT ─── */
+  .tab-content { display: none; padding: 24px; max-width: 1200px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    margin-top: 32px;
+  }
+
+  .section-title:first-child { margin-top: 0; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .card:hover { border-color: var(--gold-dark); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .badge-march { background: #1a2f4a; color: #64b5f6; border: 1px solid #2a4a6a; }
+  .badge-april { background: #2a1f4a; color: #ce93d8; border: 1px solid #4a3a6a; }
+  .badge-may   { background: #1a3a2a; color: #81c784; border: 1px solid #2a5a3a; }
+  .badge-june  { background: #3a2a1a; color: #ffb74d; border: 1px solid #5a4a2a; }
+  .badge-july  { background: #3a1a1a; color: #ef9a9a; border: 1px solid #5a2a2a; }
+  .badge-done  { background: #1a2a1a; color: #4ecb71; border: 1px solid #2a4a2a; }
+  .badge-aug   { background: #2a1a2a; color: #f48fb1; border: 1px solid #5a2a5a; }
+  .badge-sep   { background: #1a1a3a; color: #80cbc4; border: 1px solid #2a2a5a; }
+
+  /* Concept / unconfirmed projects */
+  .card.concept {
+    border: 1px dashed #3a4a5a;
+    opacity: 0.82;
+  }
+  .card.concept:hover { border-color: #6ab0d4; opacity: 1; }
+  .concept-banner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #1a2a35;
+    border: 1px solid #2a4a5a;
+    border-radius: 6px;
+    padding: 5px 10px;
+    margin-bottom: 12px;
+    font-size: 0.75rem;
+    color: #6ab0d4;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── INFO GRID ─── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  .info-item { display: flex; flex-direction: column; gap: 3px; }
+  .info-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+  }
+  .info-value {
+    font-size: 0.88rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .info-value.highlight { color: var(--gold); font-weight: 600; }
+  .info-value.urgent { color: var(--red); font-weight: 700; }
+
+  /* ─── CREW TAGS ─── */
+  .crew-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .crew-tag {
+    background: var(--navy);
+    border: 1px solid var(--navy-border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ─── ALERT BAR ─── */
+  .alert {
+    background: var(--red-bg);
+    border: 1px solid var(--red);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .alert-icon { font-size: 1rem; }
+
+  /* ─── CALENDAR ─── */
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .cal-nav-btn {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .cal-nav-btn:hover { border-color: var(--gold); background: var(--navy-mid); }
+
+  .cal-month-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .cal-day-header {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 0;
+  }
+
+  .cal-day {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius-sm);
+    min-height: 80px;
+    padding: 6px;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+
+  .cal-day.empty { background: transparent; border-color: transparent; }
+  .cal-day.today { border-color: var(--gold); }
+
+  .cal-day-num {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .cal-day.today .cal-day-num { color: var(--gold); font-weight: 800; }
+
+  .cal-event {
+    border-radius: 3px;
+    padding: 2px 5px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+
+  .cal-event.type-event  { background: #1a3a2a; color: #81c784; border-left: 2px solid #4ecb71; }
+  .cal-event.type-build  { background: #1a2f4a; color: #64b5f6; border-left: 2px solid #42a5f5; }
+  .cal-event.type-transport { background: #2a2a1a; color: #fff176; border-left: 2px solid #e8b84b; }
+  .cal-event.type-breakdown { background: #3a1a1a; color: #ef9a9a; border-left: 2px solid #e05252; }
+  .cal-event.type-travel { background: #2a1f4a; color: #ce93d8; border-left: 2px solid #9b59b6; }
+
+  /* ─── LEGEND ─── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  /* ─── TODO ─── */
+  .progress-bar-wrap {
+    background: var(--navy);
+    border-radius: 4px;
+    height: 6px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-bar.high { background: var(--green); }
+  .progress-bar.low { background: var(--red); }
+
+  .progress-label {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .todo-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+
+  .todo-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.83rem;
+  }
+
+  .todo-item:last-child { border-bottom: none; }
+
+  .todo-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 2px solid var(--navy-border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .todo-check.done {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--navy);
+    font-size: 0.7rem;
+  }
+
+  .todo-text { color: var(--text-muted); line-height: 1.4; }
+  .todo-text.done { text-decoration: line-through; opacity: 0.5; }
+  .todo-text.urgent { color: var(--red); font-weight: 600; }
+
+  .urgent-badge {
+    background: var(--red-bg);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ─── TRAVEL ─── */
+  .travel-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .travel-header {
+    background: linear-gradient(135deg, #152232 0%, #1a2d42 100%);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .travel-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .travel-ref {
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-weight: 600;
+    font-family: monospace;
+    letter-spacing: 1px;
+  }
+
+  .flight-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 16px;
+  }
+
+  .flight-row:last-child { border-bottom: none; }
+
+  .flight-dir {
+    font-size: 1.2rem;
+    width: 24px;
+    flex-shrink: 0;
+  }
+
+  .flight-info { flex: 1; }
+
+  .flight-num {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gold);
+    font-family: monospace;
+  }
+
+  .flight-route {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 2px 0;
+  }
+
+  .flight-time {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .flight-class {
+    background: var(--navy);
+    border: 1px solid var(--navy-border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .car-details {
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  /* ─── DETAIL MODAL ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius);
+    padding: 24px;
+    width: min(500px, 90vw);
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-right: 24px;
+  }
+
+  /* ─── GRID LAYOUT ─── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 600px) {
+    .tab-content { padding: 16px; }
+    header { padding: 0 16px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: repeat(2, 1fr); }
+    .cal-day { min-height: 60px; }
+    .flight-row { flex-wrap: wrap; }
+    .cal-event { font-size: 0.55rem; padding: 1px 3px; }
+  }
+
+
+  /* ─── CREW MODAL ─── */
+  .crew-phase { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--navy-border); }
+  .crew-phase:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .crew-phase-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 8px; flex-wrap: wrap; }
+  .crew-phase-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+  .crew-phase-dates { font-size: 0.78rem; color: var(--gold); font-weight: 600; }
+  .crew-phase-role { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 8px; font-style: italic; }
+  .crew-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .crew-chip { background: var(--navy); border: 1px solid var(--navy-border); border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; color: var(--text); font-weight: 500; }
+  .crew-chip.urgent-chip { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+  .crew-chip.missing-chip { border-color: var(--red); color: var(--red); background: var(--red-bg); font-style: italic; }
+  [data-project] { cursor: pointer; }
+  [data-project]:hover { border-color: var(--gold-dark) !important; transform: translateY(-2px); box-shadow: 0 4px 20px rgba(232,184,75,0.1); }
+  .crew-tap-hint { font-size: 0.68rem; color: var(--gold-dark); text-align: right; margin-top: 10px; opacity: 0.7; }
+  .crew-source { font-size: 0.68rem; color: var(--text-dim); margin-top: 16px; text-align: right; font-style: italic; padding-top: 12px; border-top: 1px solid var(--navy-border); }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: var(--navy-border);
+    margin: 20px 0;
+  }
+
+  /* ─── NOTES PILL ─── */
+  .notes-pill {
+    background: var(--navy);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+    border-left: 3px solid var(--gold-dark);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .status-dot.green { background: var(--green); }
+  .status-dot.yellow { background: var(--gold); }
+  .status-dot.red { background: var(--red); }
+
+  /* ─── VEHICLES TAB ─── */
+  .vehicle-sync-bar {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .vehicle-sync-bar span { color: var(--gold); font-weight: 600; }
+  .vehicle-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 28px;
+  }
+  .vehicle-table th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .vehicle-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.85rem;
+    vertical-align: middle;
+  }
+  .vehicle-table tr:last-child td { border-bottom: none; }
+  .vehicle-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .vehicle-row { cursor: pointer; }
+  .vehicle-row:hover td { background: rgba(232,184,75,0.05) !important; }
+  .vehicle-tap-hint { font-size: 0.68rem; color: var(--gold-dark); opacity: 0.7; margin-top: 3px; }
+  .trip-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .trip-row:last-child { border-bottom: none; }
+  .trip-date { font-size: 0.78rem; color: var(--gold); font-weight: 700; min-width: 60px; padding-top: 2px; }
+  .trip-info { flex: 1; }
+  .trip-event { font-weight: 600; color: var(--text); font-size: 0.88rem; }
+  .trip-detail { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+  .trip-badge { font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; margin-left: 6px; }
+  .trip-badge.done { background: #1a2a1a; color: #4ecb71; }
+  .trip-badge.concept { background: #1a2a35; color: #6ab0d4; }
+  .trip-badge.urgent { background: var(--red-bg); color: var(--red); }
+  .vehicle-name { font-weight: 700; color: var(--text); }
+  .vehicle-model { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .vehicle-location { color: var(--text); }
+  .vehicle-location-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .vehicle-next { color: var(--gold); font-weight: 600; }
+  .vehicle-next-date { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+  .vstatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .vstatus.event    { background: #1a3a2a; color: #81c784; border: 1px solid #2a5a3a; }
+  .vstatus.free     { background: #1a2a3a; color: #64b5f6; border: 1px solid #2a4a5a; }
+  .vstatus.service  { background: #3a2a1a; color: #ffb74d; border: 1px solid #5a4a2a; }
+  .vstatus.transit  { background: #2a1f4a; color: #ce93d8; border: 1px solid #4a3a6a; }
+  .vstatus.unknown  { background: #2a2a2a; color: #888; border: 1px solid #3a3a3a; }
+
+  /* ─── TIMELINE ─── */
+  .tl-outer {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius);
+    background: var(--navy-card);
+    position: relative;
+  }
+  .tl-outer::-webkit-scrollbar { height: 8px; }
+  .tl-outer::-webkit-scrollbar-track { background: var(--navy-mid); border-radius: 4px; }
+  .tl-outer::-webkit-scrollbar-thumb { background: var(--navy-border); border-radius: 4px; }
+  .tl-outer::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+  .tl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .tl-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .tl-swatch {
+    width: 20px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .tl-swatch.concept {
+    background: transparent !important;
+    border: 2px dashed #888;
+    height: 8px;
+  }
+  .tl-info-bar {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="pw-gate">
+  <div class="pw-logo">
+    <div class="brand">Maxamaze</div>
+    <div class="sub">Planning Dashboard 2026</div>
+  </div>
+  <div class="pw-box">
+    <h2>🔐 Enter Password</h2>
+    <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">UNLOCK</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <header>
+    <div>
+      <div class="header-brand">Maxamaze</div>
+      <div class="header-sub">Planning 2026</div>
+    </div>
+    <div style="font-size:0.75rem;color:var(--text-dim)">🇧🇪 Thibaut Bollen</div>
+  </header>
+
+  <nav>
+    <button class="tab-btn active" onclick="switchTab('planning',this)">📋 Planning</button>
+    <button class="tab-btn" onclick="switchTab('calendar',this)">📅 Calendar</button>
+    <button class="tab-btn" onclick="switchTab('todo',this)">✅ To-Do</button>
+    <button class="tab-btn" onclick="switchTab('travel',this)">✈️ Travel</button>
+    <button class="tab-btn" onclick="switchTab('vehicles',this)">🚛 Voertuigen</button>
+    <button class="tab-btn" onclick="switchTab('timeline',this)">📊 Sets</button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════ PLANNING ═══════════════════════════════════════ -->
+  <div id="tab-planning" class="tab-content active">
+
+    <div class="alert">
+      <span class="alert-icon">⚠️</span>
+      <span><strong>URGENT:</strong> Hamburg driver Bourg en Bresse → Hamburg (06 May) — find driver now!</span>
+    </div>
+
+    <div class="section-title">🟡 March 2026</div>
+    <div class="cards-grid">
+
+      <div class="card" data-project="Ocala WEC">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇺🇸 Ocala WEC</div>
+            <div class="card-subtitle">World Equestrian Center — Longines League of Nations</div>
+          </div>
+          <span class="badge badge-march">MARCH</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Event</div>
+            <div class="info-value highlight">18–22 March</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Transport Op</div>
+            <div class="info-value">05 Feb ✅</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Transport Terug</div>
+            <div class="info-value">24 Mar</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Set</div>
+            <div class="info-value">Set 2</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Permanence</div>
+            <div class="info-value">Thibaut & Gaëtan</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Accommodation</div>
+            <div class="info-value">WEC Facility ✅</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Rental Car</div>
+            <div class="info-value">Sixt #9730339262</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Thibaut Flies</div>
+            <div class="info-value">10 Mar → 24 Mar</div>
+          </div>
+        </div>
+        <div class="notes-pill" style="border-left-color:#4ecb71;">🏨 Hotel bevestigd — The Riding Academy Hotel ✅</div>
+      </div>
+
+    </div>
+
+    <div class="section-title">🟣 April 2026</div>
+    <div class="cards-grid">
+
+      <div class="card" data-project="Tilleman">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🔨 Tilleman</div>
+            <div class="card-subtitle">Simple job</div>
+          </div>
+          <span class="badge badge-april">05 APR</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">05 April</div></div>
+          <div class="info-item"><div class="info-label">Crew</div><div class="info-value">Gaetan, Arno</div></div>
+          <div class="info-item"><div class="info-label">Transport</div><div class="info-value">TBD</div></div>
+        </div>
+        <div class="notes-pill">Simple job — all details TBD</div>
+      </div>
+
+      <div class="card" data-project="CDI Aachen">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 CDI Aachen</div>
+            <div class="card-subtitle">Dressage International — Aachen</div>
+          </div>
+          <span class="badge badge-april">APRIL</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">06–20 April</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">30 Mar</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">13 Apr</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">05 Apr + 13 Apr</div></div>
+          <div class="info-item"><div class="info-label">Site Visit</div><div class="info-value">Tue 24 Feb</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="Horses & Dreams">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🐴 Horses & Dreams</div>
+            <div class="card-subtitle">Hagen a.T.W.</div>
+          </div>
+          <span class="badge badge-april">APRIL</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">22–26 April</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">20–21 Apr</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">27 Apr</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">20 Apr — Yves ✅</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">27 Apr — Yves ✅</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">1 & 2 + Arch</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Thibaut & Jens</div></div>
+        </div>
+        <div class="crew-tags">
+          <span class="crew-tag">Arno</span><span class="crew-tag">Gaetan</span>
+          <span class="crew-tag">Jens</span><span class="crew-tag">Thibaut</span>
+        </div>
+        <div class="notes-pill">⏳ Waiting: approval extra element → may reschedule build half day earlier</div>
+      </div>
+
+    </div>
+
+    <div class="section-title">🟢 May 2026</div>
+    <div class="cards-grid">
+
+      <div class="card" data-project="CSI Ermelo">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇳🇱 CSI Ermelo</div>
+            <div class="card-subtitle">Jumping Netherlands</div>
+          </div>
+          <span class="badge badge-may">MAY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">30 Apr – 03 May</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">28 Apr 08:00 (3 crew)</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">28 Apr — Trailer CE</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">29 Apr – 03 May (Arno?)</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">03 May 16:00 (3 crew)</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2 (120 panels)</div></div>
+          <div class="info-item"><div class="info-label">Distance</div><div class="info-value">434 km</div></div>
+        </div>
+        <div class="crew-tags">
+          <span class="crew-tag">Arno</span><span class="crew-tag">Tim</span><span class="crew-tag">Jenthe</span>
+        </div>
+      </div>
+
+      <div class="card" data-project="Bourg en Bresse">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇫🇷 Bourg en Bresse</div>
+            <div class="card-subtitle">France</div>
+          </div>
+          <span class="badge badge-may">MAY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">06–10 May</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">03/05 23:59</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">04/05 – 05/05 12:00</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens (06–10 May)</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">10/05 18:00</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 1 (164 panels)</div></div>
+        </div>
+        <div class="crew-tags">
+          <span class="crew-tag">Thibaut</span><span class="crew-tag">Gaëtan</span>
+          <span class="crew-tag">Jens</span><span class="crew-tag">Driver ⏳</span>
+        </div>
+      </div>
+
+      <div class="card" data-project="Hamburg Derby">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 Hamburg Derby</div>
+            <div class="card-subtitle">1100km — Deutsches Spring Derby</div>
+          </div>
+          <span class="badge badge-may">MAY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">12–17 May</div></div>
+          <div class="info-item"><div class="info-label">Truck 1</div><div class="info-value">Ermelo → Hamburg</div></div>
+          <div class="info-item"><div class="info-label">Truck 2</div><div class="info-value">Office (departs 04 May)</div></div>
+          <div class="info-item"><div class="info-label">Truck 3 ⚠️</div><div class="info-value urgent">Bourg (departs 06 May)</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">07–12 May (5× stagehand)</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">3× LED Tech</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">17 May 18:00 (Joost)</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">1+2+wit</div></div>
+        </div>
+        <div class="crew-tags">
+          <span class="crew-tag">Thibaut</span><span class="crew-tag">Gaëtan</span><span class="crew-tag">Arno</span>
+          <span class="crew-tag">stagair</span><span class="crew-tag">Jules</span><span class="crew-tag">Joost (BK)</span>
+        </div>
+        <div class="notes-pill">🚛 3 trucks — loadlists to make. stagehands.de for build/breakdown.</div>
+        <div class="notes-pill" style="border-left-color:#6ab0d4;">🔷 <strong>Optie</strong> — Anna van Schafhof: vergroting dressuurscherm 10×7m of 12×7m · inhuur Nicola Ledvision · offerte in opmaak</div>
+      </div>
+
+      <div class="card" data-project="CSIO Aachen">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 CSIO Aachen</div>
+            <div class="card-subtitle">Nations Cup — Aachen</div>
+          </div>
+          <span class="badge badge-may">MAY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">21–24 May</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">18 May (Tim)</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">25 May (Tim)</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">42m²</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">Jens (18 May)</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">T + A + G?</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="CDIO Lier – BK">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇧🇪 CDIO Lier – BK</div>
+            <div class="card-subtitle">Belgian Championship Dressage</div>
+          </div>
+          <span class="badge badge-may">MAY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">20–31 May</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">18 May</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">01 Jun</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">100m + Set 1 + 8m² (Hamburg)</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+        </div>
+      </div>
+
+      <div class="card concept" data-project="Hohen Wieschendorf">
+        <div class="concept-banner">🔷 CONCEPT — bevestiging verwacht 01/03</div>
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 Hohen Wieschendorf</div>
+            <div class="card-subtitle">From Hamburg</div>
+          </div>
+          <span class="badge badge-may">MAY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">26–31 May</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">Van Hamburg</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">150 + Set 2</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="Peel & Maas">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇳🇱 Peel & Maas</div>
+            <div class="card-subtitle">Netherlands</div>
+          </div>
+          <span class="badge badge-may">MAY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">26–31 May</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">2 × 21m² (Set 2)</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">21–22 May (Arno LV)</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Thibaut & Gaëtan</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">Arno Ledvision</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-title">🟠 June 2026</div>
+    <div class="cards-grid">
+
+      <div class="card" data-project="CSIO La Baule">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇫🇷 CSIO La Baule</div>
+            <div class="card-subtitle">Nations Cup — La Baule</div>
+          </div>
+          <span class="badge badge-june">JUNE</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">07–14 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">07 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">14 Jun</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2 (196 panels)</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">08 Jun</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">T + stagair</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="Outdoor Gelderland">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇳🇱 Outdoor Gelderland</div>
+            <div class="card-subtitle">Netherlands</div>
+          </div>
+          <span class="badge badge-june">JUNE</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">09–14 Jun</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Arno</div></div>
+        </div>
+        <div class="notes-pill">💰 Offerte Ledvision 25k</div>
+      </div>
+
+      <div class="card" data-project="LGCT Saint Tropez">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇫🇷 LGCT Saint Tropez</div>
+            <div class="card-subtitle">Longines Global Champions Tour</div>
+          </div>
+          <span class="badge badge-june">JUNE</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">10–13 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">04 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">16 Jun</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Audio</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">05–09 Jun</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Joel + Gaëtan</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">14 Jun</div></div>
+        </div>
+        <div class="crew-tags">
+          <span class="crew-tag">Joel</span><span class="crew-tag">Gaëtan</span>
+        </div>
+      </div>
+
+      <div class="card" data-project="Future Champions">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🏆 Future Champions</div>
+            <div class="card-subtitle"></div>
+          </div>
+          <span class="badge badge-june">JUNE</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">11–14 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">08 Jun</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 1</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">Ultimate?</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="CHIO Rotterdam">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇳🇱 CHIO Rotterdam</div>
+            <div class="card-subtitle">Nations Cup — Rotterdam</div>
+          </div>
+          <span class="badge badge-june">JUNE</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">17–21 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">15 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">22 Jun</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">16 Jun (Ultimate?)</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">22 Jun (Arno)</div></div>
+        </div>
+      </div>
+
+      <div class="card concept" data-project="Crozet">
+        <div class="concept-banner">🔷 CONCEPT — bevestigingsdatum onbekend</div>
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇫🇷 Crozet</div>
+            <div class="card-subtitle">JIVA Hill</div>
+          </div>
+          <span class="badge badge-june">JUNE</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">25–28 Jun</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="GCT Paris">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇫🇷 GCT Paris</div>
+            <div class="card-subtitle">Longines Global Champions Tour</div>
+          </div>
+          <span class="badge badge-june">JUNE</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">15–22 Jun</div></div>
+          <div class="info-item"><div class="info-label">Rentman</div><div class="info-value">#1046</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="Nations Cup Hagen">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 Nations Cup Hagen</div>
+            <div class="card-subtitle">Nations Cup Hagen 2026</div>
+          </div>
+          <span class="badge badge-june">JUNE/JULY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">26 Jun – 06 Jul</div></div>
+          <div class="info-item"><div class="info-label">Rentman</div><div class="info-value">#1050</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-title">🔴 July 2026</div>
+    <div class="cards-grid">
+
+      <div class="card" data-project="Falsterbo">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇸🇪 Falsterbo</div>
+            <div class="card-subtitle">Sweden</div>
+          </div>
+          <span class="badge badge-july">JULY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">03–13 Jul</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">30 Jun</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">13 Jul</div></div>
+        </div>
+        <div class="crew-tags">
+          <span class="crew-tag">Thibaut</span><span class="crew-tag">Thibaut</span><span class="crew-tag">Gaëtan</span>
+        </div>
+      </div>
+
+
+      <div class="card concept" data-project="Rastede">
+        <div class="concept-banner">🔷 CONCEPT — bevestiging verwacht 01/03</div>
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 Rastede</div>
+            <div class="card-subtitle">Germany — na Falsterbo</div>
+          </div>
+          <span class="badge badge-july">JULY</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">20–26 Jul</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">Mogelijk van Falsterbo</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+        </div>
+      </div>
+
+      <div class="card concept" data-project="Donaueschingen">
+        <div class="concept-banner">🔷 CONCEPT — bevestiging verwacht 01/03</div>
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 Donaueschingen</div>
+            <div class="card-subtitle">Duitsland (nabij Zwitserland)</div>
+          </div>
+          <span class="badge badge-july">JULY/AUG</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">29 Jul – 02 Aug</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 1</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-title">🟣 August 2026</div>
+    <div class="cards-grid">
+
+      <div class="card concept" data-project="WK CDI Verden">
+        <div class="concept-banner">🔷 CONCEPT — bevestiging verwacht 01/03</div>
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇩🇪 WK CDI Verden</div>
+            <div class="card-subtitle">Wereldkampioenschap Dressuur</div>
+          </div>
+          <span class="badge badge-aug">AUGUST</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">02–09 Aug</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">Mogelijk van Rastede</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
+        </div>
+        <div class="notes-pill">Na Rastede</div>
+      </div>
+
+      <div class="card" data-project="Beachvolley Nieuwpoort">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🏐 BK Beachvolley Nieuwpoort</div>
+            <div class="card-subtitle">Belgisch Kampioenschap</div>
+          </div>
+          <span class="badge badge-aug">AUGUST</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">05–17 Aug</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2</div></div>
+          <div class="info-item"><div class="info-label">Rentman</div><div class="info-value">#1047</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="Gesves">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇧🇪 Gesves</div>
+            <div class="card-subtitle">Belgium</div>
+          </div>
+          <span class="badge badge-aug">AUGUST</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">10–16 Aug</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 1</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="WK Hockey">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🏑 WK Hockey</div>
+            <div class="card-subtitle">Wereldkampioenschap Hockey</div>
+          </div>
+          <span class="badge badge-aug">AUGUST</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">13–31 Aug</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 2 + screen</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="CSI Ermelo Aug">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇳🇱 CSI Ermelo (aug)</div>
+            <div class="card-subtitle">Jumping Netherlands — zomer</div>
+          </div>
+          <span class="badge badge-aug">AUGUST</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">18–23 Aug</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 1</div></div>
+        </div>
+      </div>
+
+      <div class="card" data-project="BSM Brussel Stephex">
+        <div class="card-header">
+          <div>
+            <div class="card-title">🇧🇪 Brussel Stephex Masters</div>
+            <div class="card-subtitle">BSM 2026</div>
+          </div>
+          <span class="badge badge-sep">AUG/SEP</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">25–30 Aug</div></div>
+          <div class="info-item"><div class="info-label">Set</div><div class="info-value">Set 1</div></div>
+          <div class="info-item"><div class="info-label">Rentman</div><div class="info-value">#1048</div></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ CALENDAR ═══════════════════════════════════════ -->
+  <div id="tab-calendar" class="tab-content">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4ecb71"></div>Event</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#42a5f5"></div>Build-up</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e8b84b"></div>Transport</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e05252"></div>Breakdown</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div>Travel</div>
+    </div>
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="prevMonth()">← Prev</button>
+      <span class="cal-month-title" id="cal-title"></span>
+      <button class="cal-nav-btn" onclick="nextMonth()">Next →</button>
+    </div>
+    <div id="cal-grid" class="cal-grid"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ TODO ═══════════════════════════════════════ -->
+  <div id="tab-todo" class="tab-content">
+
+    <div class="alert">
+      <span class="alert-icon">🚨</span>
+      <span><strong>Hamburg driver Bourg → Hamburg (06 May)</strong> — URGENT: find driver now!</span>
+    </div>
+    <div class="alert" style="background:#2a1a00;border-color:#c99a30;color:#c99a30;margin-bottom:20px">
+      <span class="alert-icon">🏨</span>
+      <span><strong>Ocala hotel</strong> — follow up if no reply by 27/02</span>
+    </div>
+
+    <div id="todo-cards"></div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ TRAVEL ═══════════════════════════════════════ -->
+  <div id="tab-travel" class="tab-content">
+
+    <div class="section-title">✈️ Ocala WEC — March 2026</div>
+
+    <div class="travel-card">
+      <div class="travel-header">
+        <div>
+          <div class="travel-title">✈️ Thibaut Bollen — BRU ↔ MCO</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">Ocala, Florida — KLM / Delta</div>
+        </div>
+        <div class="travel-ref">Booking: X5X2QX</div>
+      </div>
+
+      <div class="flight-row">
+        <div class="flight-dir">➡️</div>
+        <div class="flight-info">
+          <div class="flight-num">KL1704 — KLM</div>
+          <div class="flight-route">BRU → AMS</div>
+          <div class="flight-time">Tue 10 Mar · 10:45 → 11:35</div>
+        </div>
+        <div class="flight-class">Business J</div>
+      </div>
+
+      <div class="flight-row">
+        <div class="flight-dir">➡️</div>
+        <div class="flight-info">
+          <div class="flight-num">KL6123 — Delta</div>
+          <div class="flight-route">AMS → MCO</div>
+          <div class="flight-time">Tue 10 Mar · 12:45 → ~17:00</div>
+        </div>
+        <div class="flight-class">—</div>
+      </div>
+
+      <div class="flight-row" style="border-top:1px solid rgba(255,255,255,0.08)">
+        <div class="flight-dir">⬅️</div>
+        <div class="flight-info">
+          <div class="flight-num">KL6123 — Delta One</div>
+          <div class="flight-route">MCO → AMS</div>
+          <div class="flight-time">Tue 24 Mar · 20:20 → Wed 25 Mar · 10:25 · Seat 07J</div>
+        </div>
+        <div class="flight-class">Delta One</div>
+      </div>
+
+      <div class="flight-row">
+        <div class="flight-dir">⬅️</div>
+        <div class="flight-info">
+          <div class="flight-num">KL1705 — KLM</div>
+          <div class="flight-route">AMS → BRU</div>
+          <div class="flight-time">Wed 25 Mar · 13:30 → 14:15</div>
+        </div>
+        <div class="flight-class">Business J</div>
+      </div>
+    </div>
+
+    <div class="travel-card">
+      <div class="travel-header">
+        <div>
+          <div class="travel-title">✈️ Gaëtan Tulleneers — BRU/AMS ↔ MCO</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">Own booking</div>
+        </div>
+      </div>
+
+      <div class="flight-row">
+        <div class="flight-dir">➡️</div>
+        <div class="flight-info">
+          <div class="flight-num">—</div>
+          <div class="flight-route">BRU/AMS → MCO</div>
+          <div class="flight-time">Wed 11 Mar (1 day after Thibaut)</div>
+        </div>
+        <div class="flight-class">—</div>
+      </div>
+
+      <div class="flight-row" style="border-top:1px solid rgba(255,255,255,0.08)">
+        <div class="flight-dir">⬅️</div>
+        <div class="flight-info">
+          <div class="flight-num">KL6123 — Delta One</div>
+          <div class="flight-route">MCO → AMS</div>
+          <div class="flight-time">Tue 24 Mar · 20:20 → Wed 25 Mar · 10:25</div>
+        </div>
+        <div class="flight-class">Delta One</div>
+      </div>
+
+      <div class="flight-row">
+        <div class="flight-dir">⬅️</div>
+        <div class="flight-info">
+          <div class="flight-num">KL1705 — KLM</div>
+          <div class="flight-route">AMS → BRU</div>
+          <div class="flight-time">Wed 25 Mar · 13:30 → 14:15</div>
+        </div>
+        <div class="flight-class">—</div>
+      </div>
+    </div>
+
+    <div class="section-title">🚗 Rental Car — Ocala</div>
+
+    <div class="travel-card">
+      <div class="travel-header">
+        <div>
+          <div class="travel-title">🚗 Sixt Rental Car — Orlando Airport</div>
+        </div>
+        <div class="travel-ref">#9730339262</div>
+      </div>
+      <div class="car-details">
+        <div class="info-item">
+          <div class="info-label">Vehicle</div>
+          <div class="info-value">Compact (VW Taos or similar)</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Transmission</div>
+          <div class="info-value">Automatic</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Pick up</div>
+          <div class="info-value highlight">Tue 10 Mar · 18:00 — MCO</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Drop off</div>
+          <div class="info-value highlight">Tue 24 Mar · 18:00 — MCO</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Cost</div>
+          <div class="info-value">$869.82 prepaid + $200 deposit</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Includes</div>
+          <div class="info-value">Full tank, unlimited km, CDW, breakdown</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">WEC Contact</div>
+          <div class="info-value">shelley.page@wec.net</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Note</div>
+          <div class="info-value" style="color:var(--orange)">Toll pass & extra driver NOT included</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ VOERTUIGEN ═══════════════════════════════════════ -->
+  <div id="tab-vehicles" class="tab-content">
+
+    <div class="vehicle-sync-bar">
+      📡 AirTag sync: <span>22/02/2026 · ~16:30</span> &nbsp;·&nbsp; Locaties gedeeld via Gaëtan's account &nbsp;·&nbsp; <span style="color:var(--text-dim)">Volgende sync: heartbeat morgen</span>
+    </div>
+
+    <div class="section-title">🚛 Trekkers</div>
+
+    <table class="vehicle-table">
+      <thead>
+        <tr>
+          <th>Voertuig</th>
+          <th>Status</th>
+          <th>📍 Huidige locatie</th>
+          <th>📅 Volgende bestemming</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="vehicle-row" data-vehicle="Mercedes Actros">
+          <td>
+            <div class="vehicle-name">Mercedes Actros 1840</div>
+            <div class="vehicle-model">04/2019 · Truck 1</div>
+          </td>
+          <td><span class="vstatus event">🟢 Op event</span></td>
+          <td>
+            <div class="vehicle-location">Gent Expo</div>
+            <div class="vehicle-location-sub">AirTag: Maxamazelaan, Gent · 25 min geleden</div>
+          </td>
+          <td>
+            <div class="vehicle-next">Horses &amp; Dreams</div>
+            <div class="vehicle-next-date">Transport op: 20/04 · eerst onderhoud plannen</div>
+          </td>
+        </tr>
+        <tr class="vehicle-row" data-vehicle="DAF XF 530FT">
+          <td>
+            <div class="vehicle-name">DAF XF 530FT</div>
+            <div class="vehicle-model">01/2019 · Truck 2</div>
+          </td>
+          <td><span class="vstatus service">🔧 Onderhoud</span></td>
+          <td>
+            <div class="vehicle-location">Bij de spuiter</div>
+            <div class="vehicle-location-sub">AirTag: ~51 km van Gent · terugkomst onbekend</div>
+          </td>
+          <td>
+            <div class="vehicle-next">Hamburg Derby</div>
+            <div class="vehicle-next-date">Transport op: 04/05</div>
+          </td>
+        </tr>
+        <tr class="vehicle-row" data-vehicle="MAN TGA">
+          <td>
+            <div class="vehicle-name">MAN TGA</div>
+            <div class="vehicle-model">01/2006 · Truck 3</div>
+          </td>
+          <td><span class="vstatus transit">🟣 Vertrekt morgen</span></td>
+          <td>
+            <div class="vehicle-location">Opwijk / L&amp;L</div>
+            <div class="vehicle-location-sub">AirTag: ~38 km van Gent · 1 uur geleden</div>
+          </td>
+          <td>
+            <div class="vehicle-next">Zangersheide Indoor</div>
+            <div class="vehicle-next-date">Transport op: 23/02 · Tim Boon</div>
+          </td>
+        </tr>
+        <tr class="vehicle-row" data-vehicle="Sprinter">
+          <td>
+            <div class="vehicle-name">Mercedes Sprinter 317</div>
+            <div class="vehicle-model">2025 · Bestelwagen</div>
+          </td>
+          <td><span class="vstatus unknown">— Onbekend</span></td>
+          <td>
+            <div class="vehicle-location">—</div>
+            <div class="vehicle-location-sub">Geen AirTag data</div>
+          </td>
+          <td>
+            <div class="vehicle-next">—</div>
+            <div class="vehicle-next-date">Geen geplande trip</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">🚌 Trailers</div>
+
+    <table class="vehicle-table">
+      <thead>
+        <tr>
+          <th>Trailer</th>
+          <th>Status</th>
+          <th>📍 Huidige locatie</th>
+          <th>📅 Volgende bestemming</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="vehicle-row" data-vehicle="Set 1">
+          <td>
+            <div class="vehicle-name">Curtain Trailer 1 — Set 1</div>
+            <div class="vehicle-model">Kögel SN24 (2022) · 26 LED crates</div>
+          </td>
+          <td><span class="vstatus transit">🟣 Vertrekt morgen</span></td>
+          <td>
+            <div class="vehicle-location">Ringlaan, Opwijk</div>
+            <div class="vehicle-location-sub">AirTag: 36 km · 43 min geleden ✅ thuisbasis</div>
+          </td>
+          <td>
+            <div class="vehicle-next">Zangersheide Indoor</div>
+            <div class="vehicle-next-date">Transport op: 23/02 · MAN TGA · Tim Boon</div>
+          </td>
+        </tr>
+        <tr class="vehicle-row" data-vehicle="Set 2">
+          <td>
+            <div class="vehicle-name">Curtain Trailer 2 — Set 2</div>
+            <div class="vehicle-model">Kögel SN24 (2022) · 34 LED crates</div>
+          </td>
+          <td><span class="vstatus free">🔵 Vrij</span></td>
+          <td>
+            <div class="vehicle-location">Opwijk (waarschijnlijk)</div>
+            <div class="vehicle-location-sub">AirTag: ~38 km · 4 uur geleden</div>
+          </td>
+          <td>
+            <div class="vehicle-next">Horses &amp; Dreams</div>
+            <div class="vehicle-next-date">Transport op: 20/04</div>
+          </td>
+        </tr>
+        <tr class="vehicle-row" data-vehicle="Witte Trailer">
+          <td>
+            <div class="vehicle-name">Witte Trailer (Chéreau)</div>
+            <div class="vehicle-model">2023 · Gesloten oplegger · Absen / misc</div>
+          </td>
+          <td><span class="vstatus event">🟢 Op event</span></td>
+          <td>
+            <div class="vehicle-location">Gent Expo</div>
+            <div class="vehicle-location-sub">AirTag: Gent · ~1 uur geleden · terug 22/02</div>
+          </td>
+          <td>
+            <div class="vehicle-next">Hamburg Derby</div>
+            <div class="vehicle-next-date">Transport op: 10/05</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="notes-pill" style="margin-top:8px">
+      💡 Locaties worden automatisch bijgewerkt via de dagelijkse heartbeat. Status en volgende bestemming worden gesynchroniseerd met de planning.
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ TIMELINE ═══════════════════════════════════════ -->
+  <div id="tab-timeline" class="tab-content">
+
+    <div class="tl-legend">
+      <div class="tl-legend-item"><span class="tl-swatch" style="background:#4e9ecb33;border:1px solid #4e9ecb"></span> Set 1 (26 crates)</div>
+      <div class="tl-legend-item"><span class="tl-swatch" style="background:#4ecb7133;border:1px solid #4ecb71"></span> Set 2 (34 crates)</div>
+      <div class="tl-legend-item"><span class="tl-swatch concept"></span> Concept / unconfirmed</div>
+      <div class="tl-legend-item"><span class="tl-swatch" style="background:#4e9ecb15;border:1px solid #4e9ecb55;"></span> Gestapeld = gesplitste set</div>
+      <div class="tl-legend-item"><span style="display:inline-block;width:2px;height:12px;background:var(--gold);opacity:0.8;border-radius:1px"></span> Vandaag</div>
+    </div>
+
+    <div class="tl-info-bar">
+      💡 Elke balk = <strong>transport op → transport terug</strong> &nbsp;·&nbsp;
+      Lege ruimte = set beschikbaar &nbsp;·&nbsp;
+      Aaneengesloten balken = set rijdt door van event naar event &nbsp;·&nbsp;
+      Gestapelde balken = set gesplitst in meters over meerdere events tegelijk
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <button class="cal-nav-btn" onclick="tlScroll(-1)">← Earlier</button>
+      <span style="font-size:0.75rem;color:var(--text-dim);letter-spacing:0.5px">Scroll or use buttons to navigate</span>
+      <button class="cal-nav-btn" onclick="tlScroll(1)">Later →</button>
+    </div>
+    <div id="tl-container" class="tl-outer"></div>
+
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
+    <div class="modal-title" id="modal-title"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── PASSWORD ───
+function checkPw() {
+  const input = document.getElementById('pw-input');
+  if (input.value === 'Maxamaze2026') {
+    sessionStorage.setItem('mx_auth', '1');
+    document.getElementById('pw-gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initCalendar();
+    initTodo();
+    initCardClicks();
+    initVehicleClicks();
+    initTimeline();
+  } else {
+    input.classList.add('error');
+    setTimeout(() => input.classList.remove('error'), 500);
+    input.value = '';
+    input.placeholder = 'Wrong password';
+    setTimeout(() => input.placeholder = 'Password', 2000);
+  }
+}
+
+if (sessionStorage.getItem('mx_auth') === '1') {
+  document.getElementById('pw-gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.addEventListener('DOMContentLoaded', () => { initCalendar(); initTodo(); initCardClicks(); initVehicleClicks(); initTimeline(); });
+}
+
+// ─── TABS ───
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function tlScroll(dir) {
+  var c = document.getElementById('tl-container');
+  if (c) c.scrollBy({ left: dir * 300, behavior: 'smooth' });
+}
+
+// ─── CALENDAR DATA ───
+const events = [
+  // Ocala WEC
+  { name: 'Ocala: Transport OP', date: '2026-02-05', type: 'transport' , project: 'Ocala WEC' },
+  { name: '✈️ Thibaut BRU→MCO', date: '2026-03-10', type: 'travel' , project: 'Ocala WEC' },
+  { name: '✈️ Gaëtan BRU→MCO', date: '2026-03-11', type: 'travel' },
+  { name: 'Ocala WEC', date: '2026-03-18', type: 'event' , project: 'Ocala WEC' },
+  { name: 'Ocala WEC', date: '2026-03-19', type: 'event' , project: 'Ocala WEC' },
+  { name: 'Ocala WEC', date: '2026-03-20', type: 'event' , project: 'Ocala WEC' },
+  { name: 'Ocala WEC', date: '2026-03-21', type: 'event' , project: 'Ocala WEC' },
+  { name: 'Ocala WEC', date: '2026-03-22', type: 'event' , project: 'Ocala WEC' },
+  { name: 'Ocala: Transport Back', date: '2026-03-24', type: 'transport' , project: 'Ocala WEC' },
+  { name: '✈️ T+G MCO→BRU', date: '2026-03-24', type: 'travel' , project: 'Ocala WEC' },
+  // Tilleman
+  { name: 'Tilleman', date: '2026-04-05', type: 'event' , project: 'Tilleman' },
+  // CDI Aachen
+  { name: 'CDI Aachen: Transport OP', date: '2026-03-30', type: 'transport' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen', date: '2026-04-06', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen', date: '2026-04-07', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen', date: '2026-04-08', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen', date: '2026-04-09', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen', date: '2026-04-10', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen: Transport Back', date: '2026-04-13', type: 'transport' , project: 'CDI Aachen' },
+  // Horses & Dreams
+  { name: 'H&D: Build + Transport OP', date: '2026-04-20', type: 'build' , project: 'Horses & Dreams' },
+  { name: 'H&D: Build', date: '2026-04-21', type: 'build' , project: 'Horses & Dreams' },
+  { name: 'Horses & Dreams', date: '2026-04-22', type: 'event' , project: 'Horses & Dreams' },
+  { name: 'Horses & Dreams', date: '2026-04-23', type: 'event' , project: 'Horses & Dreams' },
+  { name: 'Horses & Dreams', date: '2026-04-24', type: 'event' , project: 'Horses & Dreams' },
+  { name: 'Horses & Dreams', date: '2026-04-25', type: 'event' , project: 'Horses & Dreams' },
+  { name: 'Horses & Dreams', date: '2026-04-26', type: 'event' , project: 'Horses & Dreams' },
+  { name: 'H&D: Breakdown + Transport', date: '2026-04-27', type: 'breakdown' , project: 'Horses & Dreams' },
+  // CSI Ermelo
+  { name: 'Ermelo: Build + Transport OP', date: '2026-04-28', type: 'build' , project: 'CSI Ermelo' },
+  { name: 'CSI Ermelo', date: '2026-04-30', type: 'event' , project: 'CSI Ermelo' },
+  { name: 'CSI Ermelo', date: '2026-05-01', type: 'event' , project: 'CSI Ermelo' },
+  { name: 'CSI Ermelo', date: '2026-05-02', type: 'event' , project: 'CSI Ermelo' },
+  { name: 'CSI Ermelo: Breakdown', date: '2026-05-03', type: 'breakdown' , project: 'CSI Ermelo' },
+  // Bourg en Bresse
+  { name: 'BEB: Transport OP', date: '2026-05-03', type: 'transport' , project: 'Bourg en Bresse' },
+  { name: 'BEB: Build', date: '2026-05-04', type: 'build' , project: 'Bourg en Bresse' },
+  { name: 'BEB: Build', date: '2026-05-05', type: 'build' , project: 'Bourg en Bresse' },
+  { name: 'Bourg en Bresse', date: '2026-05-06', type: 'event' , project: 'Bourg en Bresse' },
+  { name: 'Bourg en Bresse', date: '2026-05-07', type: 'event' , project: 'Bourg en Bresse' },
+  { name: 'Bourg en Bresse', date: '2026-05-08', type: 'event' , project: 'Bourg en Bresse' },
+  { name: 'Bourg en Bresse', date: '2026-05-09', type: 'event' , project: 'Bourg en Bresse' },
+  { name: 'Bourg en Bresse', date: '2026-05-10', type: 'event' , project: 'Bourg en Bresse' },
+  { name: 'BEB: Breakdown', date: '2026-05-10', type: 'breakdown' , project: 'Bourg en Bresse' },
+  { name: 'BEB: Transport Back', date: '2026-05-11', type: 'transport' , project: 'Bourg en Bresse' },
+  // Hamburg
+  { name: '🚛 Hamburg: Truck 2 (Office)', date: '2026-05-04', type: 'transport' , project: 'Hamburg Derby' },
+  { name: '🚛 Hamburg: Truck 3 ⚠️', date: '2026-05-06', type: 'transport' , project: 'Hamburg Derby' },
+  { name: 'Hamburg: Build', date: '2026-05-07', type: 'build' , project: 'Hamburg Derby' },
+  { name: 'Hamburg: Build', date: '2026-05-08', type: 'build' , project: 'Hamburg Derby' },
+  { name: 'Hamburg: Build', date: '2026-05-09', type: 'build' , project: 'Hamburg Derby' },
+  { name: 'Hamburg: Build', date: '2026-05-10', type: 'build' , project: 'Hamburg Derby' },
+  { name: 'Hamburg: Build', date: '2026-05-11', type: 'build' , project: 'Hamburg Derby' },
+  { name: 'Hamburg: Build', date: '2026-05-12', type: 'build' , project: 'Hamburg Derby' },
+  { name: 'Hamburg Derby', date: '2026-05-12', type: 'event' , project: 'Hamburg Derby' },
+  { name: 'Hamburg Derby', date: '2026-05-13', type: 'event' , project: 'Hamburg Derby' },
+  { name: 'Hamburg Derby', date: '2026-05-14', type: 'event' , project: 'Hamburg Derby' },
+  { name: 'Hamburg Derby', date: '2026-05-15', type: 'event' , project: 'Hamburg Derby' },
+  { name: 'Hamburg Derby', date: '2026-05-16', type: 'event' , project: 'Hamburg Derby' },
+  { name: 'Hamburg Derby', date: '2026-05-17', type: 'event' , project: 'Hamburg Derby' },
+  { name: 'Hamburg: Breakdown', date: '2026-05-17', type: 'breakdown' , project: 'Hamburg Derby' },
+  // CDIO Lier
+  { name: 'Lier BK: Transport OP', date: '2026-05-18', type: 'transport' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-20', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-21', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-22', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-23', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-24', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-25', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-26', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-27', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-28', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-29', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-30', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'CDIO Lier BK', date: '2026-05-31', type: 'event' , project: 'CDIO Lier – BK' },
+  { name: 'Lier BK: Transport Back', date: '2026-06-01', type: 'transport' , project: 'CDIO Lier – BK' },
+  // CSIO Aachen
+  { name: 'Aachen: Transport OP', date: '2026-05-18', type: 'transport' , project: 'CSIO Aachen' },
+  { name: 'CSIO Aachen', date: '2026-05-21', type: 'event' , project: 'CSIO Aachen' },
+  { name: 'CSIO Aachen', date: '2026-05-22', type: 'event' , project: 'CSIO Aachen' },
+  { name: 'CSIO Aachen', date: '2026-05-23', type: 'event' , project: 'CSIO Aachen' },
+  { name: 'CSIO Aachen', date: '2026-05-24', type: 'event' , project: 'CSIO Aachen' },
+  { name: 'CSIO Aachen: Transport Back', date: '2026-05-25', type: 'transport' , project: 'CSIO Aachen' },
+  // Hohen Wieschendorf
+  { name: 'Hohen Wieschendorf', date: '2026-05-26', type: 'event' , project: 'Hohen Wieschendorf' },
+  { name: 'Hohen Wieschendorf', date: '2026-05-27', type: 'event' , project: 'Hohen Wieschendorf' },
+  { name: 'Hohen Wieschendorf', date: '2026-05-28', type: 'event' , project: 'Hohen Wieschendorf' },
+  { name: 'Hohen Wieschendorf', date: '2026-05-29', type: 'event' , project: 'Hohen Wieschendorf' },
+  { name: 'Hohen Wieschendorf', date: '2026-05-30', type: 'event' , project: 'Hohen Wieschendorf' },
+  { name: 'Hohen Wieschendorf', date: '2026-05-31', type: 'event' , project: 'Hohen Wieschendorf' },
+  // Peel & Maas
+  { name: 'P&M: Build', date: '2026-05-21', type: 'build' , project: 'Peel & Maas' },
+  { name: 'P&M: Build', date: '2026-05-22', type: 'build' , project: 'Peel & Maas' },
+  { name: 'Peel & Maas', date: '2026-05-26', type: 'event' , project: 'Peel & Maas' },
+  { name: 'Peel & Maas', date: '2026-05-27', type: 'event' , project: 'Peel & Maas' },
+  { name: 'Peel & Maas', date: '2026-05-28', type: 'event' , project: 'Peel & Maas' },
+  { name: 'Peel & Maas', date: '2026-05-29', type: 'event' , project: 'Peel & Maas' },
+  { name: 'Peel & Maas', date: '2026-05-30', type: 'event' , project: 'Peel & Maas' },
+  { name: 'Peel & Maas', date: '2026-05-31', type: 'event' , project: 'Peel & Maas' },
+  // La Baule
+  { name: 'La Baule: Transport OP', date: '2026-06-07', type: 'transport' , project: 'CSIO La Baule' },
+  { name: 'La Baule: Build', date: '2026-06-08', type: 'build' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-07', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-08', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-09', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-10', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-11', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-12', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-13', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'CSIO La Baule', date: '2026-06-14', type: 'event' , project: 'CSIO La Baule' },
+  { name: 'La Baule: Breakdown', date: '2026-06-14', type: 'breakdown' , project: 'CSIO La Baule' },
+  // Outdoor Gelderland
+  { name: 'Outdoor Gelderland', date: '2026-06-09', type: 'event' , project: 'Outdoor Gelderland' },
+  { name: 'Outdoor Gelderland', date: '2026-06-10', type: 'event' , project: 'Outdoor Gelderland' },
+  { name: 'Outdoor Gelderland', date: '2026-06-11', type: 'event' , project: 'Outdoor Gelderland' },
+  { name: 'Outdoor Gelderland', date: '2026-06-12', type: 'event' , project: 'Outdoor Gelderland' },
+  { name: 'Outdoor Gelderland', date: '2026-06-13', type: 'event' , project: 'Outdoor Gelderland' },
+  { name: 'Outdoor Gelderland', date: '2026-06-14', type: 'event' , project: 'Outdoor Gelderland' },
+  // Saint Tropez
+  { name: 'ST: Transport OP', date: '2026-06-04', type: 'transport' , project: 'LGCT Saint Tropez' },
+  { name: 'ST: Build', date: '2026-06-05', type: 'build' , project: 'LGCT Saint Tropez' },
+  { name: 'ST: Build', date: '2026-06-06', type: 'build' , project: 'LGCT Saint Tropez' },
+  { name: 'ST: Build', date: '2026-06-07', type: 'build' , project: 'LGCT Saint Tropez' },
+  { name: 'ST: Build', date: '2026-06-08', type: 'build' , project: 'LGCT Saint Tropez' },
+  { name: 'ST: Build', date: '2026-06-09', type: 'build' , project: 'LGCT Saint Tropez' },
+  { name: 'LGCT Saint Tropez', date: '2026-06-10', type: 'event' , project: 'LGCT Saint Tropez' },
+  { name: 'LGCT Saint Tropez', date: '2026-06-11', type: 'event' , project: 'LGCT Saint Tropez' },
+  { name: 'LGCT Saint Tropez', date: '2026-06-12', type: 'event' , project: 'LGCT Saint Tropez' },
+  { name: 'LGCT Saint Tropez', date: '2026-06-13', type: 'event' , project: 'LGCT Saint Tropez' },
+  { name: 'ST: Breakdown', date: '2026-06-14', type: 'breakdown' , project: 'LGCT Saint Tropez' },
+  { name: 'ST: Transport Back', date: '2026-06-16', type: 'transport' , project: 'LGCT Saint Tropez' },
+  // Future Champions
+  { name: 'FC: Transport OP', date: '2026-06-08', type: 'transport' , project: 'Future Champions' },
+  { name: 'FC: Build', date: '2026-06-08', type: 'build' , project: 'Future Champions' },
+  { name: 'Future Champions', date: '2026-06-11', type: 'event' , project: 'Future Champions' },
+  { name: 'Future Champions', date: '2026-06-12', type: 'event' , project: 'Future Champions' },
+  { name: 'Future Champions', date: '2026-06-13', type: 'event' , project: 'Future Champions' },
+  { name: 'Future Champions', date: '2026-06-14', type: 'event' , project: 'Future Champions' },
+  // CHIO Rotterdam
+  { name: 'Rotterdam: Transport OP', date: '2026-06-15', type: 'transport' , project: 'CHIO Rotterdam' },
+  { name: 'Rotterdam: Build', date: '2026-06-16', type: 'build' , project: 'CHIO Rotterdam' },
+  { name: 'CHIO Rotterdam', date: '2026-06-17', type: 'event' , project: 'CHIO Rotterdam' },
+  { name: 'CHIO Rotterdam', date: '2026-06-18', type: 'event' , project: 'CHIO Rotterdam' },
+  { name: 'CHIO Rotterdam', date: '2026-06-19', type: 'event' , project: 'CHIO Rotterdam' },
+  { name: 'CHIO Rotterdam', date: '2026-06-20', type: 'event' , project: 'CHIO Rotterdam' },
+  { name: 'CHIO Rotterdam', date: '2026-06-21', type: 'event' , project: 'CHIO Rotterdam' },
+  { name: 'Rotterdam: Breakdown', date: '2026-06-22', type: 'breakdown' , project: 'CHIO Rotterdam' },
+  // Crozet
+  { name: 'Crozet', date: '2026-06-25', type: 'event' , project: 'Crozet' },
+  { name: 'Crozet', date: '2026-06-26', type: 'event' , project: 'Crozet' },
+  { name: 'Crozet', date: '2026-06-27', type: 'event' , project: 'Crozet' },
+  { name: 'Crozet', date: '2026-06-28', type: 'event' , project: 'Crozet' },
+  // Falsterbo
+  { name: 'Falsterbo: Transport OP', date: '2026-06-30', type: 'transport' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-03', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-04', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-05', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-06', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-07', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-08', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-09', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-10', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-11', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo', date: '2026-07-12', type: 'event' , project: 'Falsterbo' },
+  { name: 'Falsterbo: Transport Back', date: '2026-07-13', type: 'transport' , project: 'Falsterbo' },
+
+  // GCT Paris
+  { name: 'GCT Paris', date: '2026-06-15', type: 'event', project: 'GCT Paris' },
+  { name: 'GCT Paris', date: '2026-06-16', type: 'event', project: 'GCT Paris' },
+  { name: 'GCT Paris', date: '2026-06-17', type: 'event', project: 'GCT Paris' },
+  { name: 'GCT Paris', date: '2026-06-18', type: 'event', project: 'GCT Paris' },
+  { name: 'GCT Paris', date: '2026-06-19', type: 'event', project: 'GCT Paris' },
+  { name: 'GCT Paris', date: '2026-06-20', type: 'event', project: 'GCT Paris' },
+  { name: 'GCT Paris', date: '2026-06-21', type: 'event', project: 'GCT Paris' },
+  { name: 'GCT Paris', date: '2026-06-22', type: 'event', project: 'GCT Paris' },
+  // Nations Cup Hagen
+  { name: 'NC Hagen', date: '2026-06-26', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-06-27', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-06-28', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-06-29', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-06-30', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-07-01', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-07-02', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-07-03', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-07-04', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-07-05', type: 'event', project: 'Nations Cup Hagen' },
+  { name: 'NC Hagen', date: '2026-07-06', type: 'event', project: 'Nations Cup Hagen' },
+  // Rastede
+  { name: 'Rastede', date: '2026-07-20', type: 'event', project: 'Rastede' },
+  { name: 'Rastede', date: '2026-07-21', type: 'event', project: 'Rastede' },
+  { name: 'Rastede', date: '2026-07-22', type: 'event', project: 'Rastede' },
+  { name: 'Rastede', date: '2026-07-23', type: 'event', project: 'Rastede' },
+  { name: 'Rastede', date: '2026-07-24', type: 'event', project: 'Rastede' },
+  { name: 'Rastede', date: '2026-07-25', type: 'event', project: 'Rastede' },
+  { name: 'Rastede', date: '2026-07-26', type: 'event', project: 'Rastede' },
+  // Donaueschingen
+  { name: 'Donaueschingen', date: '2026-07-29', type: 'event', project: 'Donaueschingen' },
+  { name: 'Donaueschingen', date: '2026-07-30', type: 'event', project: 'Donaueschingen' },
+  { name: 'Donaueschingen', date: '2026-07-31', type: 'event', project: 'Donaueschingen' },
+  { name: 'Donaueschingen', date: '2026-08-01', type: 'event', project: 'Donaueschingen' },
+  { name: 'Donaueschingen', date: '2026-08-02', type: 'event', project: 'Donaueschingen' },
+  // WK CDI Verden
+  { name: 'WK CDI Verden', date: '2026-08-02', type: 'event', project: 'WK CDI Verden' },
+  { name: 'WK CDI Verden', date: '2026-08-03', type: 'event', project: 'WK CDI Verden' },
+  { name: 'WK CDI Verden', date: '2026-08-04', type: 'event', project: 'WK CDI Verden' },
+  { name: 'WK CDI Verden', date: '2026-08-05', type: 'event', project: 'WK CDI Verden' },
+  { name: 'WK CDI Verden', date: '2026-08-06', type: 'event', project: 'WK CDI Verden' },
+  { name: 'WK CDI Verden', date: '2026-08-07', type: 'event', project: 'WK CDI Verden' },
+  { name: 'WK CDI Verden', date: '2026-08-08', type: 'event', project: 'WK CDI Verden' },
+  { name: 'WK CDI Verden', date: '2026-08-09', type: 'event', project: 'WK CDI Verden' },
+  // Beachvolley Nieuwpoort
+  { name: 'BK Beachvolley', date: '2026-08-05', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-06', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-07', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-08', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-09', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-10', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-11', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-12', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-13', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-14', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-15', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-16', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  { name: 'BK Beachvolley', date: '2026-08-17', type: 'event', project: 'Beachvolley Nieuwpoort' },
+  // Gesves
+  { name: 'Gesves', date: '2026-08-10', type: 'event', project: 'Gesves' },
+  { name: 'Gesves', date: '2026-08-11', type: 'event', project: 'Gesves' },
+  { name: 'Gesves', date: '2026-08-12', type: 'event', project: 'Gesves' },
+  { name: 'Gesves', date: '2026-08-13', type: 'event', project: 'Gesves' },
+  { name: 'Gesves', date: '2026-08-14', type: 'event', project: 'Gesves' },
+  { name: 'Gesves', date: '2026-08-15', type: 'event', project: 'Gesves' },
+  { name: 'Gesves', date: '2026-08-16', type: 'event', project: 'Gesves' },
+  // WK Hockey
+  { name: 'WK Hockey', date: '2026-08-13', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-14', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-15', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-16', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-17', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-18', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-19', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-20', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-21', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-22', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-23', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-24', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-25', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-26', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-27', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-28', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-29', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-30', type: 'event', project: 'WK Hockey' },
+  { name: 'WK Hockey', date: '2026-08-31', type: 'event', project: 'WK Hockey' },
+  // CSI Ermelo Aug
+  { name: 'CSI Ermelo (aug)', date: '2026-08-18', type: 'event', project: 'CSI Ermelo Aug' },
+  { name: 'CSI Ermelo (aug)', date: '2026-08-19', type: 'event', project: 'CSI Ermelo Aug' },
+  { name: 'CSI Ermelo (aug)', date: '2026-08-20', type: 'event', project: 'CSI Ermelo Aug' },
+  { name: 'CSI Ermelo (aug)', date: '2026-08-21', type: 'event', project: 'CSI Ermelo Aug' },
+  { name: 'CSI Ermelo (aug)', date: '2026-08-22', type: 'event', project: 'CSI Ermelo Aug' },
+  { name: 'CSI Ermelo (aug)', date: '2026-08-23', type: 'event', project: 'CSI Ermelo Aug' },
+  // BSM Brussel Stephex
+  { name: 'BSM Stephex', date: '2026-08-25', type: 'event', project: 'BSM Brussel Stephex' },
+  { name: 'BSM Stephex', date: '2026-08-26', type: 'event', project: 'BSM Brussel Stephex' },
+  { name: 'BSM Stephex', date: '2026-08-27', type: 'event', project: 'BSM Brussel Stephex' },
+  { name: 'BSM Stephex', date: '2026-08-28', type: 'event', project: 'BSM Brussel Stephex' },
+  { name: 'BSM Stephex', date: '2026-08-29', type: 'event', project: 'BSM Brussel Stephex' },
+  { name: 'BSM Stephex', date: '2026-08-30', type: 'event', project: 'BSM Brussel Stephex' },
+];
+
+// ─── CALENDAR ───
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let currentYear = 2026;
+let currentMonth = 2; // 0-indexed, so 2 = March
+
+function initCalendar() {
+  renderCalendar(currentYear, currentMonth);
+}
+
+function renderCalendar(year, month) {
+  document.getElementById('cal-title').textContent = months[month] + ' ' + year;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  // Day headers
+  days.forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'cal-day-header';
+    h.textContent = d;
+    grid.appendChild(h);
+  });
+
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // Mon=0 … Sun=6
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+
+  // Empty cells
+  for (let i = 0; i < firstDay; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-day empty';
+    grid.appendChild(cell);
+  }
+
+  const monthEvents = {};
+  events.forEach(e => {
+    const d = new Date(e.date);
+    if (d.getFullYear() === year && d.getMonth() === month) {
+      const day = d.getDate();
+      if (!monthEvents[day]) monthEvents[day] = [];
+      monthEvents[day].push(e);
+    }
+  });
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-day';
+    const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+    if (isToday) cell.classList.add('today');
+
+    const dayNum = document.createElement('div');
+    dayNum.className = 'cal-day-num';
+    dayNum.textContent = day;
+    cell.appendChild(dayNum);
+
+    if (monthEvents[day]) {
+      const maxShow = 3;
+      monthEvents[day].slice(0, maxShow).forEach(ev => {
+        const evEl = document.createElement('div');
+        evEl.className = 'cal-event type-' + ev.type;
+        evEl.textContent = ev.name;
+        evEl.title = ev.name;
+        evEl.onclick = () => { if (ev.project) { showCrewModal(ev.project); } else { showModal(ev.name, `<div class="info-item"><div class="info-label">Date</div><div class="info-value">${ev.date}</div></div><div class="info-item"><div class="info-label">Type</div><div class="info-value" style="text-transform:capitalize">${ev.type}</div></div>`); } };
+        cell.appendChild(evEl);
+      });
+      if (monthEvents[day].length > maxShow) {
+        const more = document.createElement('div');
+        more.style.cssText = 'font-size:0.6rem;color:var(--text-dim);padding:1px 3px;';
+        more.textContent = `+${monthEvents[day].length - maxShow} more`;
+        cell.appendChild(more);
+      }
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+function prevMonth() {
+  currentMonth--;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  renderCalendar(currentYear, currentMonth);
+}
+
+function nextMonth() {
+  currentMonth++;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  renderCalendar(currentYear, currentMonth);
+}
+
+// ─── TODO ───
+const projects = [
+  {
+    name: 'Ocala WEC',
+    month: 'March',
+    items: [
+      { text: 'Crew confirmed (Thibaut + Gaëtan)', done: true },
+      { text: 'Power plan', done: true },
+      { text: 'Hotels → WEC facility (no hotel needed)', done: true },
+      { text: 'Transport arranged (left 05/02)', done: true },
+      { text: 'Rental car → Sixt #9730339262', done: true },
+      { text: 'Thibaut flights ✅ BRU→MCO 10/03', done: true },
+      { text: 'Gaëtan flights ✅ (own booking)', done: true },
+      { text: 'Rentman up to date', done: true },
+      { text: 'Contact person on-site (shelley.page@wec.net)', done: false },
+      { text: '🏨 Hotel follow-up if no reply by 27/02', done: false, urgent: true },
+      { text: 'APA Air reshipment — check when on-site (~10-15 Mar)', done: false },
+      { text: 'Tim available for pickup when shipment arrives in BE?', done: false },
+    ]
+  },
+  {
+    name: 'Tilleman',
+    month: 'April',
+    items: [
+      { text: 'Add to Rentman', done: false },
+      { text: 'Plan crew (Gaetan & Arno)', done: false },
+      { text: 'Transport arranged', done: false },
+    ]
+  },
+  {
+    name: 'CDI Aachen',
+    month: 'April',
+    items: [
+      { text: 'Site visit Tue 24 Feb — frame measurements', done: true },
+      { text: 'Confirm what is needed after visit', done: true },
+      { text: 'Crew confirmed (Jens)', done: false },
+      { text: 'Power plan', done: true },
+      { text: 'Hotels arranged', done: true },
+      { text: 'Transport arranged', done: true },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Horses & Dreams',
+    month: 'April',
+    items: [
+      { text: 'Crew confirmed (in Rentman)', done: true },
+      { text: 'Hotels arranged (booked)', done: true },
+      { text: 'Transport arranged (Set 1 & 2 + Arch)', done: true },
+      { text: 'Drivers confirmed (Yves Mertens 20 & 27 Apr)', done: true },
+      { text: 'Rentman up to date', done: true },
+      { text: 'Power plan', done: false },
+      { text: 'Hotel name — note which hotel', done: false },
+      { text: 'Contact person on-site', done: false },
+      { text: '⏳ Waiting: approval extra element', done: false },
+    ]
+  },
+  {
+    name: 'CSI Ermelo',
+    month: 'May',
+    items: [
+      { text: 'Crew confirmed (in Rentman)', done: true },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Contact person on-site → Walter Makker · Wivaldi · +31 648 331 431', done: true },
+    ]
+  },
+  {
+    name: 'Bourg en Bresse',
+    month: 'May',
+    items: [
+      { text: 'Crew confirmed (in Rentman)', done: true },
+      { text: '⏳ Truck driver build-up (1 chauffeur CE, 03-04 May) — pending', done: false },
+      { text: 'Send permanence info to Jens', done: false },
+      { text: 'Send hotel request', done: false },
+      { text: 'Send power plan', done: false },
+      { text: 'Breakdown crew (stagehands.de 10-11 May)', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Hamburg Derby',
+    month: 'May',
+    items: [
+      { text: 'Crew confirmed (in Rentman)', done: true },
+      { text: '⚠️ URGENT: driver Bourg → Hamburg (06 May)', done: false, urgent: true },
+      { text: 'Rent equipment — check what needed', done: false },
+      { text: 'Make loadlist Truck 1 (from Ermelo)', done: false },
+      { text: 'Make loadlist Truck 2 (from office)', done: false },
+      { text: 'Make loadlist Truck 3 (from Bourg)', done: false },
+      { text: 'Send power plan', done: false },
+      { text: 'Send hotel request', done: false },
+      { text: 'Book stagehands.de build-up + breakdown', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'CSIO Aachen',
+    month: 'May',
+    items: [
+      { text: 'Site visit 24 Feb — check frames, take pictures', done: false },
+      { text: 'Confirm crew needed during event', done: false },
+      { text: 'Confirm permanence on-site', done: false },
+      { text: 'Confirm build-up timing', done: false },
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens build, T+A+G? breakdown)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (42m², Tim driving)', done: false },
+      { text: 'Drivers confirmed (Tim ok)', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'CDIO Lier – BK',
+    month: 'May',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens perm, build ??)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (100m + Set 1 + 8m² from Hamburg)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Hohen Wieschendorf',
+    month: 'May',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens perm, build/breakdown ??)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (from Hamburg)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Peel & Maas',
+    month: 'May',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Arno Ledvision, T & G perm)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'CSIO La Baule',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (T + stagair)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 2, 196 panels)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Outdoor Gelderland',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Arno perm)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'LGCT Saint Tropez',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Joel + Gaëtan)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Audio)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Future Champions',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens perm, Ultimate?)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 1)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'CHIO Rotterdam',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens perm, Arno breakdown)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 2)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Crozet',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens perm)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 2)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Falsterbo',
+    month: 'July',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (T+T+G)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'GCT Paris',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Nations Cup Hagen',
+    month: 'June',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Rastede',
+    month: 'July',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens perm)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 2 — after Falsterbo)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Donaueschingen',
+    month: 'July',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 1)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'WK CDI Verden',
+    month: 'August',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed (Jens perm — na Rastede)', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 2)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'BK Beachvolley Nieuwpoort',
+    month: 'August',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 2)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Gesves',
+    month: 'August',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 1)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'WK Hockey',
+    month: 'August',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 2 + screen)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'CSI Ermelo (aug)',
+    month: 'August',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 1)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+  {
+    name: 'Brussel Stephex Masters',
+    month: 'August',
+    items: [
+      { text: 'Put into planner', done: false },
+      { text: 'Crew confirmed', done: false },
+      { text: 'Power plan', done: false },
+      { text: 'Hotels arranged', done: false },
+      { text: 'Transport arranged (Set 1)', done: false },
+      { text: 'Drivers confirmed', done: false },
+      { text: 'Rentman up to date', done: false },
+      { text: 'Contact person on-site', done: false },
+    ]
+  },
+];
+
+const monthColors = {
+  'March': '#1a2f4a',
+  'April': '#2a1f4a',
+  'May': '#1a3a2a',
+  'June': '#3a2a1a',
+  'July': '#3a1a1a',
+  'August': '#2a1a2a',
+};
+
+const monthBadge = {
+  'March': 'badge-march',
+  'April': 'badge-april',
+  'May': 'badge-may',
+  'June': 'badge-june',
+  'July': 'badge-july',
+  'August': 'badge-aug',
+};
+
+function initTodo() {
+  const container = document.getElementById('todo-cards');
+  container.innerHTML = '';
+
+  let lastMonth = '';
+
+  projects.forEach(proj => {
+    if (proj.month !== lastMonth) {
+      const sec = document.createElement('div');
+      sec.className = 'section-title';
+      const emoji = { March:'🔵', April:'🟣', May:'🟢', June:'🟠', July:'🔴', August:'🟣' }[proj.month] || '📋';
+      sec.textContent = emoji + ' ' + proj.month + ' 2026';
+      container.appendChild(sec);
+      lastMonth = proj.month;
+    }
+
+    const done = proj.items.filter(i => i.done).length;
+    const total = proj.items.length;
+    const pct = Math.round((done / total) * 100);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginBottom = '16px';
+
+    const hasUrgent = proj.items.some(i => i.urgent && !i.done);
+
+    let html = `
+      <div class="card-header">
+        <div>
+          <div class="card-title">${proj.name}${hasUrgent ? ' <span class="urgent-badge">⚠️ URGENT</span>' : ''}</div>
+          <div class="card-subtitle">${proj.month} 2026</div>
+        </div>
+        <span class="badge ${monthBadge[proj.month] || ''}">${done}/${total}</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar ${pct >= 70 ? 'high' : pct < 30 ? 'low' : ''}" style="width:${pct}%"></div>
+      </div>
+      <div class="progress-label">
+        <span>${done} done, ${total - done} pending</span>
+        <span>${pct}%</span>
+      </div>
+      <div class="todo-list">
+    `;
+
+    // Urgent first
+    const urgentItems = proj.items.filter(i => i.urgent && !i.done);
+    const restItems = proj.items.filter(i => !(i.urgent && !i.done));
+
+    [...urgentItems, ...restItems].forEach(item => {
+      const icon = item.done ? '✓' : '';
+      html += `
+        <div class="todo-item">
+          <div class="todo-check ${item.done ? 'done' : ''}">${icon}</div>
+          <div class="todo-text ${item.done ? 'done' : ''} ${item.urgent && !item.done ? 'urgent' : ''}">${item.text}</div>
+          ${item.urgent && !item.done ? '<span class="urgent-badge">URGENT</span>' : ''}
+        </div>
+      `;
+    });
+
+    html += '</div>';
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+// ─── MODAL ───
+function showModal(title, body) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+
+// Init on load if already authed
+window.addEventListener('load', () => {
+  if (sessionStorage.getItem('mx_auth') === '1') {
+    initCalendar();
+    initTodo();
+    initCardClicks();
+    initVehicleClicks();
+    initTimeline();
+  }
+});
+
+// ─── CREW DATA (Rentman · sync 22/02/2026) ───
+const crewByProject = {
+  'Ocala WEC': {
+    perm: { dates: '18–22 Mrt', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers'], role: 'LED Tech / PM' },
+    note: '📦 Container vertrokken 05/02. Terug 24/03.'
+  },
+  'CDI Aachen': {
+    perm: { dates: '06–20 Apr', crew: ['Jens Messely'], role: 'LED Tech' },
+    note: '📍 Site visit 24/02 — details na bezoek te bevestigen.'
+  },
+  'Horses & Dreams': {
+    transport_op:    { dates: '18–20 Apr', crew: ['Tim Boon', 'Yves Mertens'], role: 'Chauffeur CE' },
+    build:           { dates: '20 Apr', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers', 'Jens Messely', 'Arno Boone', 'Tim Boon'], role: 'LED Tech' },
+    perm:            { dates: '22–26 Apr', crew: ['Thibaut Bollen', 'Jens Messely'], role: 'LED Tech' },
+    breakdown:       { dates: '26–27 Apr', crew: ['Gaëtan Tulleneers', 'Jens Messely', 'Arno Boone', 'Yves Mertens'], role: 'LED Tech' },
+    transport_terug: { dates: '27 Apr', crew: ['Tim Boon', 'Yves Mertens'], role: 'Chauffeur CE' }
+  },
+  'CSI Ermelo': {
+    build:     { dates: '28 Apr', crew: ['Arno Boone', 'Jenthe van Maldergem', 'Tim Boon'], role: 'LED Tech' },
+    perm:      { dates: '29 Apr – 03 Mei', crew: ['Arno Boone'], role: 'LED Tech' },
+    breakdown: { dates: '03 Mei', crew: ['Arno Boone', 'Jenthe van Maldergem', 'Tim Boon'], role: 'LED Tech' }
+  },
+  'Bourg en Bresse': {
+    transport_op:    { dates: '03–04 Mei', crew: [], role: 'Chauffeur CE', urgent: true },
+    build:           { dates: '04–05 Mei', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers', 'Jens Messely'], role: 'LED Tech / PM' },
+    perm:            { dates: '06–10 Mei', crew: ['Jens Messely'], role: 'Projectmanager' },
+    breakdown:       { dates: '10–11 Mei', crew: [], role: 'LED Tech', urgent: true, note: 'Mogelijk via stagehands.de — nog te bevestigen.' },
+    transport_terug: { dates: '11 Mei', crew: [], role: 'Chauffeur CE', urgent: true }
+  },
+
+  'GCT Paris': { note: 'Rentman #1046 · details nog te bevestigen.' },
+  'Nations Cup Hagen': { note: 'Rentman #1050 · details nog te bevestigen.' },
+  'Rastede': { perm: { dates: '20–26 Jul', crew: ['Jens Messely'], role: 'Permanentie' }, note: 'Na Falsterbo.' },
+  'Donaueschingen': { note: 'Set 1 · Zwitserland · details nog te bevestigen.' },
+  'WK CDI Verden': { perm: { dates: '02–09 Aug', crew: ['Jens Messely'], role: 'Permanentie' }, note: 'Na Rastede.' },
+  'Beachvolley Nieuwpoort': { note: 'Set 2 · Rentman #1047 · details nog te bevestigen.' },
+  'Gesves': { note: 'Set 1 · details nog te bevestigen.' },
+  'WK Hockey': { note: 'Set 2 + screen · details nog te bevestigen.' },
+  'CSI Ermelo Aug': { note: 'Set 1 · zomereditie · details nog te bevestigen.' },
+  'BSM Brussel Stephex': { note: 'Set 1 · Rentman #1048 · details nog te bevestigen.' },
+  'Hamburg Derby': {
+    transport_op: { dates: '04 Mei (truck 2, kantoor) + 06 Mei (truck 3, Bourg)', crew: ['Tim Boon (04/05)', '⚠️ Tim Boon CONFLICT (06/05)'], role: 'Chauffeur CE', urgent: true },
+    build:        { dates: '07–12 Mei', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers', 'Arno Boone', 'Jules Ickmans'], role: 'Stagehand (5/dag)' },
+    perm:         { dates: '13–17 Mei', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers', 'Arno Boone'], role: 'LED Tech' },
+    breakdown:    { dates: '17–18 Mei', crew: ['Joost Rubbrecht'], role: 'Stagehand' }
+  }
+};
+
+const PHASE_LABELS = {
+  transport_op:    { icon: '🚛', label: 'Transport Op' },
+  build:           { icon: '🔨', label: 'Opbouw' },
+  perm:            { icon: '👁', label: 'Permanentie' },
+  breakdown:       { icon: '🔧', label: 'Afbouw' },
+  transport_terug: { icon: '🚛', label: 'Transport Terug' }
+};
+
+function showCrewModal(projectName) {
+  const data = crewByProject[projectName];
+  const overlay = document.getElementById('modal-overlay');
+  const titleEl = document.getElementById('modal-title');
+  const bodyEl  = document.getElementById('modal-body');
+
+  titleEl.textContent = projectName;
+
+  if (!data) {
+    bodyEl.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;padding:8px 0;">Nog geen bemanningsdata in Rentman voor dit project.</div>';
+    overlay.classList.add('open');
+    return;
+  }
+
+  let h = '';
+  const phaseOrder = ['transport_op', 'build', 'perm', 'breakdown', 'transport_terug'];
+  phaseOrder.forEach(function(phase) {
+    if (!data[phase]) return;
+    const ph   = data[phase];
+    const meta = PHASE_LABELS[phase];
+    const isEmpty = !ph.crew || ph.crew.length === 0;
+    h += '<div class="crew-phase">';
+    h += '<div class="crew-phase-header">';
+    h += '<span class="crew-phase-title">' + meta.icon + ' ' + meta.label;
+    if (ph.urgent) { h += ' <span style="color:var(--red)">⚠️</span>'; }
+    h += '</span>';
+    h += '<span class="crew-phase-dates">' + ph.dates + '</span>';
+    h += '</div>';
+    if (ph.role) { h += '<div class="crew-phase-role">' + ph.role + '</div>'; }
+    h += '<div class="crew-chips">';
+    if (isEmpty) {
+      h += '<span class="crew-chip missing-chip">❌ Niemand toegewezen</span>';
+    } else {
+      ph.crew.forEach(function(name) {
+        const isUrgent = name.indexOf('⚠️') >= 0 || name.indexOf('CONFLICT') >= 0;
+        h += '<span class="crew-chip' + (isUrgent ? ' urgent-chip' : '') + '">' + name + '</span>';
+      });
+    }
+    h += '</div></div>';
+  });
+
+  if (data.note) { h += '<div class="notes-pill" style="margin-top:12px;">' + data.note + '</div>'; }
+  h += '<div class="crew-source">📡 Rentman API · Sync 22/02/2026</div>';
+
+  bodyEl.innerHTML = h;
+  overlay.classList.add('open');
+}
+
+function initCardClicks() {
+  if (document._cardClicksInit) return;
+  document._cardClicksInit = true;
+  document.querySelectorAll('[data-project]').forEach(function(card) {
+    var hint = document.createElement('div');
+    hint.className = 'crew-tap-hint';
+    hint.textContent = '👥 Klik voor personeel';
+    card.appendChild(hint);
+    card.addEventListener('click', function() {
+      showCrewModal(this.dataset.project);
+    });
+  });
+}
+
+// ─── VEHICLE TRIPS DATA ───
+const vehicleTrips = {
+  'Mercedes Actros': {
+    icon: '🚛', label: 'Mercedes Actros 1840 (Truck 1)',
+    note: '⚠️ Onderhoud nog te plannen na Gent Expo. Truck-toewijzingen per event worden aangevuld.',
+    trips: [
+      { date: '16–22/02', event: 'Gent Expo', detail: 'Op event — witte trailer mee', badge: 'done' },
+      { date: 'TBD',      event: 'Onderhoud', detail: 'Plannen na terugkeer van Gent Expo', badge: 'urgent' },
+      { date: 'TBD',      event: 'Volgende trips', detail: 'Truck-toewijzingen per event nog door te geven', badge: null },
+    ]
+  },
+  'DAF XF 530FT': {
+    icon: '🚛', label: 'DAF XF 530FT (Truck 2)',
+    note: 'Momenteel bij de spuiter. Terugkomst onbekend.',
+    trips: [
+      { date: 'Nu',   event: 'Bij de spuiter', detail: '~51 km van Gent · terugkomst onbekend', badge: null },
+      { date: '04/05', event: 'Hamburg Derby', detail: 'Truck 2 — vertrek van kantoor', badge: null },
+      { date: 'TBD',   event: 'Overige trips', detail: 'Truck-toewijzingen per event nog door te geven', badge: null },
+    ]
+  },
+  'MAN TGA': {
+    icon: '🚛', label: 'MAN TGA (Truck 3)',
+    note: 'Chauffeur Hamburg Truck 3 (Bourg → Hamburg 06/05) nog URGENT gezocht.',
+    trips: [
+      { date: '23/02', event: 'Zangersheide Indoor', detail: 'Tim Boon ✅ · vertrek Opwijk', badge: null },
+      { date: '01/03', event: 'Zangersheide — terug', detail: 'Tim Boon', badge: null },
+      { date: '06/05', event: 'Hamburg Derby', detail: 'Truck 3 — van Bourg en Bresse ⚠️ chauffeur gezocht', badge: 'urgent' },
+      { date: 'TBD',   event: 'Overige trips', detail: 'Truck-toewijzingen per event nog door te geven', badge: null },
+    ]
+  },
+  'Sprinter': {
+    icon: '🚐', label: 'Mercedes Sprinter 317',
+    note: 'Geen AirTag data. Trips worden aangevuld.',
+    trips: [
+      { date: 'TBD', event: 'Nog geen geplande trips', detail: '—', badge: null },
+    ]
+  },
+  'Set 1': {
+    icon: '🚌', label: 'Curtain Trailer 1 — Set 1 (26 LED crates)',
+    note: 'Thuisbasis: Ringlaan, Opwijk. Set 1 = 26 LED boarding crates.',
+    trips: [
+      { date: '23/02', event: 'Zangersheide Indoor', detail: 'MAN TGA · Tim Boon · vertrek Opwijk', badge: null },
+      { date: '01/03', event: 'Zangersheide — terug', detail: 'Terugkeer naar Opwijk', badge: null },
+      { date: '20/04', event: 'Horses & Dreams', detail: 'Yves Mertens · Set 1+2+Arch', badge: null },
+      { date: '27/04', event: 'H&D — terug', detail: 'Yves Mertens', badge: null },
+      { date: '03/05', event: 'Bourg en Bresse', detail: 'Set 1 (164 panels) · chauffeur TBD', badge: null },
+      { date: '11/05', event: 'Bourg — terug', detail: 'Richting Hamburg', badge: null },
+      { date: '06/05', event: 'Hamburg Derby', detail: 'Truck 3 — van Bourg en Bresse', badge: null },
+      { date: 'TBD',   event: 'Hamburg — terug', detail: '~18/05', badge: null },
+      { date: '08/06', event: 'Future Champions', detail: 'Set 1', badge: null },
+      { date: '29/07', event: 'Donaueschingen', detail: 'Set 1 · Zwitserland grens', badge: 'concept' },
+    ]
+  },
+  'Set 2': {
+    icon: '🚌', label: 'Curtain Trailer 2 — Set 2 (34 LED crates)',
+    note: 'Thuisbasis: Opwijk. Set 2 = 34 LED boarding crates.',
+    trips: [
+      { date: '05/02', event: 'Ocala WEC', detail: 'Container verscheept — terug 24/03', badge: 'done' },
+      { date: '20/04', event: 'Horses & Dreams', detail: 'Yves Mertens · Set 1+2+Arch', badge: null },
+      { date: '27/04', event: 'H&D — terug', detail: 'Yves Mertens', badge: null },
+      { date: '28/04', event: 'CSI Ermelo', detail: '3 crew · 120 panels · 434 km', badge: null },
+      { date: '03/05', event: 'Ermelo — terug', detail: 'Richting Hamburg', badge: null },
+      { date: '10/05', event: 'Hamburg Derby', detail: 'Truck 1 — van Ermelo', badge: null },
+      { date: '~18/05', event: 'Hamburg — terug', detail: 'Joost Rubbrecht', badge: null },
+      { date: '26/05', event: 'Peel & Maas', detail: '2× 21m² · Arno Ledvision', badge: null },
+      { date: '07/06', event: 'CSIO La Baule', detail: 'Set 2 (196 panels) · T + stagair', badge: null },
+      { date: '14/06', event: 'La Baule — terug', detail: '', badge: null },
+      { date: '15/06', event: 'CHIO Rotterdam', detail: 'Set 2 · Jens · Ultimate?', badge: null },
+      { date: '22/06', event: 'Rotterdam — terug', detail: 'Arno breakdown', badge: null },
+      { date: '25/06', event: 'Crozet', detail: 'Set 2 · Jens', badge: 'concept' },
+      { date: '20/07', event: 'Rastede', detail: 'Set 2 · Jens · mogelijk van Falsterbo', badge: 'concept' },
+      { date: '02/08', event: 'WK CDI Verden', detail: 'Set 2 · Jens · mogelijk van Rastede', badge: 'concept' },
+    ]
+  },
+  'Witte Trailer': {
+    icon: '🚌', label: 'Witte Trailer — Chéreau (2023)',
+    note: 'Voor Absen panels, audio, rigging en overig materiaal (niet-LED boarding).',
+    trips: [
+      { date: '16–22/02', event: 'Gent Expo', detail: 'Op event — samen met Mercedes Actros', badge: 'done' },
+      { date: '22/02',    event: 'Terug naar basis', detail: 'Na Gent Expo', badge: null },
+      { date: '10/05',    event: 'Hamburg Derby', detail: 'Truck 2 — van kantoor', badge: null },
+      { date: '~18/05',   event: 'Hamburg — terug', detail: '', badge: null },
+    ]
+  }
+};
+
+function showVehicleModal(vehicleName) {
+  const data = vehicleTrips[vehicleName];
+  if (!data) return;
+  let h = '<div style="margin-bottom:12px;font-size:0.82rem;color:var(--text-muted);">' + data.icon + ' ' + data.label + '</div>';
+  h += '<div style="margin-bottom:14px;">';
+  data.trips.forEach(function(t) {
+    h += '<div class="trip-row">';
+    h += '<div class="trip-date">' + t.date + '</div>';
+    h += '<div class="trip-info">';
+    h += '<div class="trip-event">' + t.event;
+    if (t.badge === 'done')    h += '<span class="trip-badge done">✅ Gedaan</span>';
+    if (t.badge === 'concept') h += '<span class="trip-badge concept">🔷 Concept</span>';
+    if (t.badge === 'urgent')  h += '<span class="trip-badge urgent">⚠️ Urgent</span>';
+    h += '</div>';
+    if (t.detail) h += '<div class="trip-detail">' + t.detail + '</div>';
+    h += '</div></div>';
+  });
+  h += '</div>';
+  if (data.note) h += '<div class="notes-pill">' + data.note + '</div>';
+  h += '<div class="crew-source">📡 Planning 2026 · Sync 22/02/2026</div>';
+  showModal(data.icon + ' ' + vehicleName, h);
+}
+
+function initVehicleClicks() {
+  if (document._vehicleClicksInit) return;
+  document._vehicleClicksInit = true;
+  document.querySelectorAll('.vehicle-row').forEach(function(row) {
+    var firstTd = row.querySelector('td');
+    if (firstTd) {
+      var hint = document.createElement('div');
+      hint.className = 'vehicle-tap-hint';
+      hint.textContent = '📅 Klik voor trips';
+      firstTd.appendChild(hint);
+    }
+    row.addEventListener('click', function() {
+      showVehicleModal(this.dataset.vehicle);
+    });
+  });
+}
+
+// ─── TIMELINE ───
+function initTimeline() {
+  var container = document.getElementById('tl-container');
+  if (!container) return;
+
+  var START = new Date('2026-02-01');
+  var PX    = 10; // pixels per day
+  var TOTAL_DAYS = Math.ceil((new Date('2026-10-01') - START) / 86400000);
+  var TOTAL_W  = TOTAL_DAYS * PX;
+
+  function dOff(s)    { return Math.floor((new Date(s) - START) / 86400000); }
+  function tlL(s)     { return Math.max(0, dOff(s)) * PX; }
+  function tlW(a, b)  { return Math.max(PX * 2, (dOff(b) - dOff(a)) * PX); }
+
+  var MONTHS = [
+    ['Feb','2026-02-01'],['Mar','2026-03-01'],['Apr','2026-04-01'],
+    ['May','2026-05-01'],['Jun','2026-06-01'],['Jul','2026-07-01'],
+    ['Aug','2026-08-01'],['Sep','2026-09-01']
+  ];
+
+  // Periods: ok=1 confirmed, ok:0 concept, rr:0 flat right (chained →), rl:0 flat left (← chained), warn=conflict
+  var ROWS = [
+    {
+      label:'Set 1', sub:'26 LED boarding crates', color:'#4e9ecb',
+      periods:[
+        {n:'Zangersheide Indoor', f:'2026-02-23', t:'2026-03-01', ok:1},
+        {n:'Horses & Dreams',     f:'2026-04-20', t:'2026-04-27', ok:1},
+        // Bourg → Hamburg → CDIO Lier BK: chained, set rijdt door
+        {n:'Bourg en Bresse',     f:'2026-05-03', t:'2026-05-11', ok:1, rr:0},
+        {n:'Hamburg Derby',       f:'2026-05-11', t:'2026-05-18', ok:1, rl:0, rr:0},
+        {n:'CDIO Lier BK',        f:'2026-05-18', t:'2026-06-01', ok:1, rl:0},
+        {n:'Future Champions',    f:'2026-06-08', t:'2026-06-15', ok:1},
+        {n:'Donaueschingen',      f:'2026-07-27', t:'2026-08-02', ok:0},
+        // August: meerdere events, transport data geschat
+        {n:'Gesves',              f:'2026-08-08', t:'2026-08-17', ok:1},
+        {n:'BSM Brussel Stephex', f:'2026-08-25', t:'2026-08-30', ok:1},
+        {n:'CSI Ermelo (aug)',     f:'2026-08-16', t:'2026-08-24', ok:1}
+      ]
+    },
+    {
+      label:'Set 2', sub:'34 LED boarding crates', color:'#4ecb71',
+      periods:[
+        {n:'Ocala WEC',           f:'2026-02-05', t:'2026-03-24', ok:1, note:'Container 🇺🇸'},
+        {n:'Horses & Dreams',     f:'2026-04-20', t:'2026-04-27', ok:1},
+        // CSI Ermelo → Hamburg Derby: chained
+        {n:'CSI Ermelo',          f:'2026-04-28', t:'2026-05-03', ok:1, rr:0},
+        {n:'Hamburg Derby',       f:'2026-05-03', t:'2026-05-18', ok:1, rl:0},
+        {n:'Peel & Maas',         f:'2026-05-21', t:'2026-05-31', ok:1},
+        {n:'Hohen Wieschendorf',  f:'2026-05-26', t:'2026-05-31', ok:0, note:'Set gesplitst met Peel & Maas'},
+        {n:'CSIO La Baule',       f:'2026-06-07', t:'2026-06-14', ok:1},
+        {n:'CHIO Rotterdam',      f:'2026-06-15', t:'2026-06-22', ok:1},
+        {n:'Crozet',              f:'2026-06-25', t:'2026-06-28', ok:0},
+        // Falsterbo → Rastede → WK CDI Verden: chained
+        {n:'Falsterbo',           f:'2026-06-30', t:'2026-07-13', ok:1, rr:0},
+        {n:'Rastede',             f:'2026-07-13', t:'2026-07-26', ok:0, rl:0, rr:0},
+        {n:'WK CDI Verden',       f:'2026-07-26', t:'2026-08-09', ok:0, rl:0},
+        // August
+        {n:'BK Beachvolley NP',   f:'2026-08-03', t:'2026-08-17', ok:1},
+        {n:'WK Hockey',           f:'2026-08-11', t:'2026-08-31', ok:1}
+      ]
+    }
+  ];
+
+  // Assign tracks for overlapping periods within a row
+  ROWS.forEach(function(row) {
+    row.periods.forEach(function(p) { p._tr = 0; });
+    for (var i = 1; i < row.periods.length; i++) {
+      for (var j = 0; j < i; j++) {
+        if (row.periods[j]._tr === row.periods[i]._tr &&
+            new Date(row.periods[j].t) > new Date(row.periods[i].f)) {
+          row.periods[i]._tr = 1; break;
+        }
+      }
+    }
+    row._multi = row.periods.some(function(p) { return p._tr === 1; });
+    row._h = row._multi ? 80 : 56;
+  });
+
+  var todayDays = Math.floor((new Date() - START) / 86400000);
+  var todayPx   = todayDays * PX;
+
+  // ── Build grid lines (reused per row) ──
+  function gridLines(h) {
+    return MONTHS.map(function(m) {
+      return '<div style="position:absolute;top:0;height:'+h+'px;left:'+tlL(m[1])+'px;width:1px;background:rgba(255,255,255,0.05)"></div>';
+    }).join('');
+  }
+
+  function todayLine(h) {
+    if (todayDays < 0 || todayDays >= TOTAL_DAYS) return '';
+    return '<div style="position:absolute;top:0;height:'+h+'px;left:'+todayPx+'px;width:2px;background:var(--gold);opacity:0.75;z-index:5"></div>';
+  }
+
+  // ── Available-gap labels ──
+  function availGaps(row) {
+    var html = '';
+    // Sort confirmed periods by start date
+    var sorted = row.periods
+      .filter(function(p) { return p.ok && !p.done && p._tr === 0; })
+      .sort(function(a,b) { return new Date(a.f) - new Date(b.f); });
+
+    var prev = null;
+    sorted.forEach(function(p) {
+      if (prev) {
+        var gapDays = dOff(p.f) - dOff(prev.t);
+        if (gapDays >= 5) {
+          var left  = tlL(prev.t);
+          var width = tlW(prev.t, p.f);
+          var label = gapDays >= 14 ? '✓ ' + gapDays + ' days free' : (gapDays >= 7 ? '✓ ' + gapDays + 'd' : '');
+          if (label) {
+            html += '<div style="position:absolute;left:'+(left+3)+'px;width:'+(width-6)+'px;top:50%;transform:translateY(-50%);font-size:0.58rem;font-weight:700;letter-spacing:0.5px;color:rgba(78,203,113,0.22);text-transform:uppercase;white-space:nowrap;overflow:hidden;pointer-events:none">'+label+'</div>';
+          }
+        }
+      }
+      prev = p;
+    });
+    // Gap after last event until end of chart
+    if (sorted.length) {
+      var last = sorted[sorted.length - 1];
+      var endGap = TOTAL_DAYS - dOff(last.t);
+      if (endGap >= 14) {
+        var left = tlL(last.t);
+        var w = (TOTAL_W - left);
+        html += '<div style="position:absolute;left:'+(left+4)+'px;width:'+(w-8)+'px;top:50%;transform:translateY(-50%);font-size:0.58rem;font-weight:700;letter-spacing:0.5px;color:rgba(78,203,113,0.22);text-transform:uppercase;white-space:nowrap;overflow:hidden;pointer-events:none">✓ available</div>';
+      }
+    }
+    return html;
+  }
+
+  // ── Render a single period bar ──
+  function bar(p, color) {
+    var left  = tlL(p.f);
+    var width = tlW(p.f, p.t);
+    var top   = p._tr === 1 ? 40 : 8;
+
+    var bg, border, textColor;
+    if (!p.ok) {
+      bg = 'transparent'; border = '1.5px dashed ' + color + '88'; textColor = color + 'bb';
+    } else if (p.done) {
+      bg = color + '15'; border = '1px solid ' + color + '44'; textColor = color + '66';
+    } else {
+      bg = color + '28'; border = '1px solid ' + color; textColor = color;
+    }
+
+    // Radius: rr=0 means flat right side (chained), rl=0 means flat left side
+    var rTL = (p.rl === 0) ? '0' : '3px';
+    var rTR = (p.rr === 0) ? '0' : '3px';
+    var rBR = (p.rr === 0) ? '0' : '3px';
+    var rBL = (p.rl === 0) ? '0' : '3px';
+    var radius = rTL+' '+rTR+' '+rBR+' '+rBL;
+
+    var chain = (p.rl === 0) ? '<span style="opacity:0.5;margin-right:3px;font-size:0.6rem">▶</span>' : '';
+    var label = width > 80 ? p.n : (width > 36 ? p.n.split(' ')[0] : '');
+    var tooltip = p.n + ' · ' + p.f + ' → ' + p.t + (p.note ? ' · ' + p.note : '') + (!p.ok ? ' [concept]' : '');
+
+    return '<div title="' + tooltip + '" style="position:absolute;left:'+left+'px;width:'+width+'px;top:'+top+'px;height:24px;'+
+      'background:'+bg+';border:'+border+';color:'+textColor+';'+
+      'border-radius:'+radius+';display:flex;align-items:center;padding:0 6px;'+
+      'font-size:0.66rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'+
+      'cursor:default;z-index:3;box-sizing:border-box;">'+chain+label+'</div>';
+  }
+
+  // ── Build HTML ──
+  var LW = 140; // label column width
+
+  var html = '<div style="display:flex;min-width:max-content;">';
+
+  // ─ Label column ─
+  html += '<div style="width:'+LW+'px;min-width:'+LW+'px;flex-shrink:0;position:sticky;left:0;z-index:20;display:flex;flex-direction:column;border-right:1px solid var(--navy-border);">';
+  // header cell
+  html += '<div style="height:40px;background:var(--navy-mid);display:flex;align-items:center;padding:0 12px;border-bottom:1px solid var(--navy-border);font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)">LED Boarding Set</div>';
+  ROWS.forEach(function(row) {
+    html += '<div style="height:'+row._h+'px;background:var(--navy-mid);display:flex;flex-direction:column;justify-content:center;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.04);">';
+    html += '<div style="font-size:0.85rem;font-weight:700;color:'+row.color+'">'+row.label+'</div>';
+    html += '<div style="font-size:0.66rem;color:var(--text-dim);margin-top:2px;line-height:1.4">'+row.sub.replace('·','<br>')+'</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // ─ Timeline column ─
+  html += '<div style="display:flex;flex-direction:column;flex:1;">';
+
+  // Month header row
+  html += '<div style="position:relative;width:'+TOTAL_W+'px;height:40px;background:var(--navy-mid);border-bottom:1px solid var(--navy-border);flex-shrink:0;">';
+  MONTHS.forEach(function(m) {
+    html += '<div style="position:absolute;left:'+tlL(m[1])+'px;height:100%;border-left:1px solid rgba(255,255,255,0.1);padding:0 8px;display:flex;align-items:center;font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)">'+m[0]+'</div>';
+  });
+  // "Today" marker in header
+  if (todayDays >= 0 && todayDays < TOTAL_DAYS) {
+    html += '<div style="position:absolute;top:6px;left:'+(todayPx-3)+'px;font-size:0.62rem;color:var(--gold);font-weight:700;z-index:6;">▼</div>';
+    html += '<div style="position:absolute;bottom:0;left:'+todayPx+'px;width:2px;height:14px;background:var(--gold);opacity:0.7;z-index:5;"></div>';
+  }
+  html += '</div>';
+
+  // Data rows
+  ROWS.forEach(function(row) {
+    html += '<div style="position:relative;width:'+TOTAL_W+'px;height:'+row._h+'px;border-bottom:1px solid rgba(255,255,255,0.04);flex-shrink:0;">';
+    html += gridLines(row._h);
+    html += todayLine(row._h);
+    html += availGaps(row);
+    row.periods.forEach(function(p) {
+      html += bar(p, row.color);
+    });
+    html += '</div>';
+  });
+
+  html += '</div>'; // timeline column
+  html += '</div>'; // flex wrap
+
+  container.innerHTML = html;
+
+  // Scroll to show ~2 months before today
+  var scrollTarget = Math.max(0, todayPx - 120);
+  container.scrollLeft = scrollTarget;
+}
+
+</script>
+</body>
+</html>
