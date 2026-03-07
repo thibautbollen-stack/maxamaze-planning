@@ -883,11 +883,6 @@
   <!-- ═══════════════════════════════════════ PLANNING ═══════════════════════════════════════ -->
   <div id="tab-planning" class="tab-content active">
 
-    <div class="alert">
-      <span class="alert-icon">⚠️</span>
-      <span><strong>URGENT:</strong> Hamburg driver Bourg en Bresse → Hamburg (06 May) — find driver now!</span>
-    </div>
-
     <div class="section-title">🟡 March 2026</div>
     <div class="cards-grid">
 
@@ -998,7 +993,7 @@
           <span class="crew-tag">Arno</span><span class="crew-tag">Gaetan</span>
           <span class="crew-tag">Jens</span><span class="crew-tag">Thibaut</span>
         </div>
-        <div class="notes-pill">⏳ Waiting: approval extra element → may reschedule build half day earlier</div>
+        <div class="notes-pill">✅ Standard planning confirmed — no extra element</div>
       </div>
 
     </div>
@@ -1046,7 +1041,7 @@
         </div>
         <div class="crew-tags">
           <span class="crew-tag">Thibaut</span><span class="crew-tag">Gaëtan</span>
-          <span class="crew-tag">Jens</span><span class="crew-tag">Driver ⏳</span>
+          <span class="crew-tag">Jens</span><span class="crew-tag">Lucas de Bock ✅</span>
         </div>
       </div>
 
@@ -1062,7 +1057,7 @@
           <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">12–17 May</div></div>
           <div class="info-item"><div class="info-label">Truck 1</div><div class="info-value">Ermelo → Hamburg</div></div>
           <div class="info-item"><div class="info-label">Truck 2</div><div class="info-value">Office (departs 04 May)</div></div>
-          <div class="info-item"><div class="info-label">Truck 3 ⚠️</div><div class="info-value urgent">Bourg (departs 06 May)</div></div>
+          <div class="info-item"><div class="info-label">Truck 3</div><div class="info-value">Bourg (departs 06 May) ✅</div></div>
           <div class="info-item"><div class="info-label">Build</div><div class="info-value">07–12 May (5× stagehand)</div></div>
           <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">3× LED Tech</div></div>
           <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">17 May 18:00 (Joost)</div></div>
@@ -1460,10 +1455,6 @@
   <!-- ═══════════════════════════════════════ TODO ═══════════════════════════════════════ -->
   <div id="tab-todo" class="tab-content">
 
-    <div class="alert">
-      <span class="alert-icon">🚨</span>
-      <span><strong>Hamburg driver Bourg → Hamburg (06 May)</strong> — URGENT: find driver now!</span>
-    </div>
     <div class="alert" style="background:#2a1a00;border-color:#c99a30;color:#c99a30;margin-bottom:20px">
       <span class="alert-icon">🏨</span>
       <span><strong>Ocala hotel</strong> — follow up if no reply by 27/02</span>
@@ -1894,7 +1885,7 @@ const events = [
   { name: 'BEB: Transport Back', date: '2026-05-11', type: 'transport' , project: 'Bourg en Bresse' },
   // Hamburg
   { name: '🚛 Hamburg: Truck 2 (Office)', date: '2026-05-04', type: 'transport' , project: 'Hamburg Derby' },
-  { name: '🚛 Hamburg: Truck 3 ⚠️', date: '2026-05-06', type: 'transport' , project: 'Hamburg Derby' },
+  { name: '🚛 Hamburg: Truck 3 (Lucas de Bock ✅)', date: '2026-05-06', type: 'transport' , project: 'Hamburg Derby' },
   { name: 'Hamburg: Build', date: '2026-05-07', type: 'build' , project: 'Hamburg Derby' },
   { name: 'Hamburg: Build', date: '2026-05-08', type: 'build' , project: 'Hamburg Derby' },
   { name: 'Hamburg: Build', date: '2026-05-09', type: 'build' , project: 'Hamburg Derby' },
@@ -2261,7 +2252,7 @@ const projects = [
       { text: 'Power plan', done: false },
       { text: 'Hotel name — note which hotel', done: false },
       { text: 'Contact person on-site', done: false },
-      { text: '⏳ Waiting: approval extra element', done: false },
+      { text: 'Extra element: not happening — standard planning confirmed ✅', done: true },
     ]
   },
   {
@@ -2293,7 +2284,7 @@ const projects = [
     month: 'May',
     items: [
       { text: 'Crew confirmed (in Rentman)', done: true },
-      { text: '⚠️ URGENT: driver Bourg → Hamburg (06 May)', done: false, urgent: true },
+      { text: 'Driver Bourg → Hamburg (06 May): Lucas de Bock ✅', done: true },
       { text: 'Rent equipment — check what needed', done: false },
       { text: 'Make loadlist Truck 1 (from Ermelo)', done: false },
       { text: 'Make loadlist Truck 2 (from office)', done: false },
@@ -2735,7 +2726,7 @@ const crewByProject = {
     breakdown: { dates: '03 Mei', crew: ['Arno Boone', 'Jenthe van Maldergem', 'Tim Boon'], role: 'LED Tech' }
   },
   'Bourg en Bresse': {
-    transport_op:    { dates: '03–04 Mei', crew: [], role: 'Chauffeur CE', urgent: true },
+    transport_op:    { dates: '03–04 Mei', crew: ['Lucas de Bock ✅'], role: 'Chauffeur CE' },
     build:           { dates: '04–05 Mei', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers', 'Jens Messely'], role: 'LED Tech / PM' },
     perm:            { dates: '06–10 Mei', crew: ['Jens Messely'], role: 'Projectmanager' },
     breakdown:       { dates: '10–11 Mei', crew: [], role: 'LED Tech', urgent: true, note: 'Mogelijk via stagehands.de — nog te bevestigen.' },
@@ -2753,7 +2744,7 @@ const crewByProject = {
   'CSI Ermelo Aug': { note: 'Set 1 · zomereditie · details nog te bevestigen.' },
   'BSM Brussel Stephex': { note: 'Set 1 · Rentman #1048 · details nog te bevestigen.' },
   'Hamburg Derby': {
-    transport_op: { dates: '04 Mei (truck 2, kantoor) + 06 Mei (truck 3, Bourg)', crew: ['Tim Boon (04/05)', '⚠️ Tim Boon CONFLICT (06/05)'], role: 'Chauffeur CE', urgent: true },
+    transport_op: { dates: '04 Mei (truck 2, kantoor) + 06 Mei (truck 3, Bourg)', crew: ['Tim Boon (04/05)', 'Lucas de Bock (06/05) ✅'], role: 'Chauffeur CE' },
     build:        { dates: '07–12 Mei', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers', 'Arno Boone', 'Jules Ickmans'], role: 'Stagehand (5/dag)' },
     perm:         { dates: '13–17 Mei', crew: ['Thibaut Bollen', 'Gaëtan Tulleneers', 'Arno Boone'], role: 'LED Tech' },
     breakdown:    { dates: '17–18 Mei', crew: ['Joost Rubbrecht'], role: 'Stagehand' }
@@ -2852,11 +2843,11 @@ const vehicleTrips = {
   },
   'MAN TGA': {
     icon: '🚛', label: 'MAN TGA (Truck 3)',
-    note: 'Chauffeur Hamburg Truck 3 (Bourg → Hamburg 06/05) nog URGENT gezocht.',
+    note: 'Chauffeur Hamburg Truck 3 (Bourg → Hamburg 06/05): Lucas de Bock ✅',
     trips: [
       { date: '23/02', event: 'Zangersheide Indoor', detail: 'Tim Boon ✅ · vertrek Opwijk', badge: null },
       { date: '01/03', event: 'Zangersheide — terug', detail: 'Tim Boon', badge: null },
-      { date: '06/05', event: 'Hamburg Derby', detail: 'Truck 3 — van Bourg en Bresse ⚠️ chauffeur gezocht', badge: 'urgent' },
+      { date: '06/05', event: 'Hamburg Derby', detail: 'Truck 3 — van Bourg en Bresse · Lucas de Bock ✅', badge: null },
       { date: 'TBD',   event: 'Overige trips', detail: 'Truck-toewijzingen per event nog door te geven', badge: null },
     ]
   },
