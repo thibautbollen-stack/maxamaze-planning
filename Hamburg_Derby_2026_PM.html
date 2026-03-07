@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hamburg Derby 2026 — Project Manager Overview</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;1,700;1,800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: #000;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@page { size: A4; margin: 0; }
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  position: relative;
+  background: #000;
+  page-break-after: always;
+  overflow: hidden;
+}
+.page:last-child { page-break-after: avoid; }
+
+/* ════ COVER ════ */
+.cover {
+  height: 297mm;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+.cover-top {
+  padding: 34px 40px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.brand-wordmark {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: 4px;
+  color: #fff;
+}
+.brand-wordmark sup { font-size: 9px; vertical-align: super; }
+.doc-type {
+  font-size: 8px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  text-align: right;
+  line-height: 2;
+}
+.cover-body {
+  flex: 1;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cover-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 14px;
+}
+.cover-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 86px;
+  line-height: 0.88;
+  color: #fff;
+  text-transform: uppercase;
+}
+.cover-year {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 86px;
+  line-height: 0.88;
+  color: rgba(255,255,255,0.11);
+}
+.cover-line {
+  width: 48px;
+  height: 2px;
+  background: #fff;
+  margin: 26px 0;
+}
+.cover-meta { display: flex; gap: 36px; }
+.meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-size: 7.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.meta-value { font-size: 12px; font-weight: 600; color: #fff; }
+.m-watermark {
+  position: absolute;
+  bottom: 46px; right: -40px;
+  width: 350px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.cover-footer {
+  padding: 16px 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ════ CONTENT PAGES ════ */
+.content-page { background: #0a0a0a; }
+
+.pg-header {
+  background: #000;
+  padding: 10px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pg-brand {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.85);
+}
+.pg-brand sup { font-size: 7px; vertical-align: super; }
+.pg-section { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+.pg-event { font-size: 8px; color: rgba(255,255,255,0.2); }
+
+.pg-body { padding: 18px 28px 22px; }
+
+/* ── SECTION BLOCK ── */
+.section-block {
+  margin-bottom: 20px;
+  page-break-inside: avoid;
+}
+
+/* Big section title */
+.section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 32px;
+  color: #fff;
+  line-height: 1;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.section-num {
+  font-size: 10px;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── SCREEN ITEM (row inside a section) ── */
+.screen-item {
+  margin-bottom: 8px;
+  page-break-inside: avoid;
+}
+.screen-item:last-child { margin-bottom: 0; }
+
+.screen-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: rgba(255,255,255,0.04);
+  border-left: 2px solid rgba(255,255,255,0.5);
+  margin-bottom: 2px;
+}
+.screen-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1;
+}
+.screen-tag {
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  padding: 1px 6px;
+}
+
+/* Spec rows */
+.specs { display: flex; flex-direction: column; gap: 1px; margin-bottom: 4px; }
+.spec {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.022);
+}
+.spec:first-child { border-radius: 0 3px 0 0; }
+.spec:last-child  { border-radius: 0 0 3px 3px; }
+.sk {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+}
+.sv { font-size: 10.5px; font-weight: 600; color: #fff; text-align: right; }
+.sv.y { color: #F5C518; }
+
+/* Machinery */
+.machinery { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; margin-bottom: 2px; }
+.mach-tag {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  padding: 3px 9px;
+  font-size: 8.5px;
+  color: rgba(255,255,255,0.55);
+}
+
+/* Note */
+.note {
+  background: rgba(245,197,24,0.05);
+  border-left: 2px solid rgba(245,197,24,0.5);
+  padding: 5px 11px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.72);
+  margin: 5px 0;
+  border-radius: 0 2px 2px 0;
+  line-height: 1.4;
+}
+.note strong { color: #F5C518; }
+
+/* Section separator */
+.sep { height: 1px; background: rgba(255,255,255,0.05); margin: 14px 0; }
+
+/* Photo */
+.el-photo {
+  width: 100%;
+  margin-bottom: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.02);
+}
+.el-photo img {
+  width: 100%;
+  height: auto;
+  max-height: 210px;
+  object-fit: contain;
+  display: block;
+}
+.photo-label {
+  margin-bottom: 5px;
+}
+.photo-label-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+}
+.photo-label-tag {
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-top: 1px;
+}
+
+/* Big stats */
+.big-stats { display: flex; gap: 6px; margin-bottom: 10px; }
+.bs {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  border-radius: 3px;
+  padding: 8px 6px;
+  text-align: center;
+}
+.bs-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 20px;
+  color: #fff;
+  line-height: 1;
+}
+.bs-label {
+  font-size: 6.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-top: 2px;
+}
+
+/* Peri table */
+.peri-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.peri-table th {
+  text-align: left;
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding: 4px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-weight: 500;
+}
+.peri-table td {
+  padding: 5px 10px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.75);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.peri-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.peri-table td.hl { color: #F5C518; font-weight: 700; }
+
+/* Page footer */
+.pg-footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 6px 28px;
+  background: #000;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  justify-content: space-between;
+  font-size: 7px;
+  color: rgba(255,255,255,0.18);
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════ PAGE 1 — COVER ══════ -->
+<div class="page cover">
+  <div class="cover-top">
+    <div class="brand-wordmark">MAXAMAZE<sup>™</sup></div>
+    <div class="doc-type">Project Manager<br>Technical Overview<br>Hamburg Derby · 2026</div>
+  </div>
+  <div class="cover-body">
+    <div class="cover-eyebrow">Deutsches Spring- und Dressurderby · Hamburg</div>
+    <div class="cover-title">Hamburg<br>Derby</div>
+    <div class="cover-year">2026</div>
+    <div class="cover-line"></div>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Event dates</span>
+        <span class="meta-value">12 – 17 May 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Project period</span>
+        <span class="meta-value">04 – 18 May 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Location</span>
+        <span class="meta-value">Hamburg, Germany</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Project Manager</span>
+        <span class="meta-value">Thibaut Bollen</span>
+      </div>
+    </div>
+  </div>
+  <div class="cover-footer">
+    <span>thibaut@maxamaze.com · +32 498 106 363</span>
+    <span>Maxamaze · Internal document · 2026</span>
+  </div>
+</div>
+
+<!-- ══════ PAGE 2 — MAIN ARENA ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Main Arena</div>
+    <div class="pg-event">Hamburg Derby 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="section-block">
+      <div class="section-title">Main Arena <span class="section-num">01</span></div>
+
+      <!-- Screen A -->
+      <div class="screen-item">
+        <div class="screen-header"><div class="screen-name">Screen A</div></div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Dimensions</span><span class="sv">8 m × 4,5 m</span></div>
+          <div class="spec"><span class="sk">Surface area</span><span class="sv y">36 m²</span></div>
+          <div class="spec"><span class="sk">Total power</span><span class="sv">21.600 W</span></div>
+          <div class="spec"><span class="sk">Weight</span><span class="sv">1.100 kg</span></div>
+          <div class="spec"><span class="sk">Construction</span><span class="sv">Stacked on Layher scaffolding</span></div>
+          <div class="spec"><span class="sk">Machinery</span><span class="sv">Rotating Telehandler</span></div>
+          <div class="spec"><span class="sk">Power connection</span><span class="sv y">63A</span></div>
+        </div>
+      </div>
+
+      <!-- Screen B -->
+      <div class="screen-item">
+        <div class="screen-header"><div class="screen-name">Screen B</div></div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Dimensions</span><span class="sv">7 m × 4 m</span></div>
+          <div class="spec"><span class="sk">Surface area</span><span class="sv y">28 m²</span></div>
+          <div class="spec"><span class="sk">Total power</span><span class="sv">16.800 W</span></div>
+          <div class="spec"><span class="sk">Weight</span><span class="sv">840 kg</span></div>
+          <div class="spec"><span class="sk">Construction</span><span class="sv">Stacked on Layher scaffolding</span></div>
+          <div class="spec"><span class="sk">Machinery</span><span class="sv">Telehandler</span></div>
+          <div class="spec"><span class="sk">Power connection</span><span class="sv y">32A</span></div>
+        </div>
+      </div>
+
+      <!-- LED Scoring -->
+      <div class="screen-item">
+        <div class="screen-header"><div class="screen-name">LED Scoring Display</div></div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Configuration</span><span class="sv">4 × LED panel — horizontal strip</span></div>
+          <div class="spec"><span class="sk">Position</span><span class="sv">Above judges / timing post</span></div>
+          <div class="spec"><span class="sk">Power connection</span><span class="sv y">32A</span></div>
+          <div class="spec"><span class="sk">Power note</span><span class="sv">For LED processors &amp; LED scoring</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Hamburg Derby 2026 — PM Overview</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+<!-- ══════ PAGE 3 — EXHIBITION + DRESSAGE ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Exhibition Area · Dressage Arena</div>
+    <div class="pg-event">Hamburg Derby 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <!-- EXHIBITION AREA -->
+    <div class="section-block">
+      <div class="section-title">Exhibition Area <span class="section-num">02</span></div>
+
+      <!-- LED Screen Food Court -->
+      <div class="screen-item">
+        <div class="screen-header"><div class="screen-name">LED Screen — Food Court</div></div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Dimensions</span><span class="sv">4 m × 2 m</span></div>
+          <div class="spec"><span class="sk">Surface area</span><span class="sv y">8 m²</span></div>
+          <div class="spec"><span class="sk">Total power</span><span class="sv">4.800 W</span></div>
+          <div class="spec"><span class="sk">Weight</span><span class="sv">240 kg</span></div>
+          <div class="spec"><span class="sk">Construction</span><span class="sv">Hanging — suspended from circular truss</span></div>
+          <div class="spec"><span class="sk">Power connection</span><span class="sv y">2 × 16A</span></div>
+        </div>
+      </div>
+
+      <!-- LED Totem -->
+      <div class="screen-item">
+        <div class="screen-header"><div class="screen-name">LED Totem — Kids Play Area</div></div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Surface area</span><span class="sv y">8 m²</span></div>
+          <div class="spec"><span class="sk">Total power</span><span class="sv">4.800 W</span></div>
+          <div class="spec"><span class="sk">Power connection</span><span class="sv y">2 × 16A</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- DRESSAGE ARENA -->
+    <div class="section-block">
+      <div class="section-title">Dressage Arena <span class="section-num">03</span></div>
+
+      <div class="screen-item">
+        <div class="screen-header"><div class="screen-name">LED Screen</div></div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Dimensions</span><span class="sv">9 m × 5 m</span></div>
+          <div class="spec"><span class="sk">Surface area</span><span class="sv y">45 m²</span></div>
+          <div class="spec"><span class="sk">Total power</span><span class="sv">27.000 W</span></div>
+          <div class="spec"><span class="sk">Weight</span><span class="sv">1.350 kg</span></div>
+          <div class="spec"><span class="sk">Construction</span><span class="sv">Hanging — truss with side banners (2 × 5m × 5m)</span></div>
+          <div class="spec"><span class="sk">Machinery</span><span class="sv">Telehandler + Cherrypicker</span></div>
+          <div class="spec"><span class="sk">Power connection</span><span class="sv y">63A</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Hamburg Derby 2026 — PM Overview</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+<!-- ══════ PAGE 4 — LED SPORTPERIMETER ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">LED Sportperimeter</div>
+    <div class="pg-event">Hamburg Derby 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="section-block">
+      <div class="section-title">LED Sportperimeter <span class="section-num">04</span></div>
+
+      <!-- Arena layout map -->
+      <div class="el-photo" style="max-height:148mm;display:flex;align-items:center;justify-content:center;">
+        <img src="file:///Users/thibautbollen/.openclaw/media/inbound/file_77---9a2fbfa4-e9f0-496e-9599-054cbc01ae27.jpg" alt="Perimeter Layout" style="width:auto;height:auto;max-width:100%;max-height:148mm;object-fit:contain;display:block;">
+      </div>
+
+      <!-- Sections table -->
+      <table class="peri-table">
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Panels</th>
+            <th>Resolution</th>
+            <th>Length</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bottom Grandstand</td>
+            <td>72</td>
+            <td>13824 × 144 px</td>
+            <td class="hl">92,16 m</td>
+          </tr>
+          <tr>
+            <td>Top Grandstand</td>
+            <td>54</td>
+            <td>10368 × 144 px</td>
+            <td class="hl">69,12 m</td>
+          </tr>
+          <tr>
+            <td>VIP</td>
+            <td>84</td>
+            <td>16128 × 144 px</td>
+            <td class="hl">107,52 m</td>
+          </tr>
+          <tr>
+            <td>Public seating area</td>
+            <td>102</td>
+            <td>19584 × 144 px</td>
+            <td class="hl">130,56 m</td>
+          </tr>
+          <tr>
+            <td>Tractor entrance</td>
+            <td>8</td>
+            <td>1536 × 144 px</td>
+            <td class="hl">10,24 m</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Hamburg Derby 2026 — PM Overview</span>
+    <span>Page 4</span>
+  </div>
+</div>
+
+
+<!-- ══════ PAGE 5 — PLANNING ══════ -->
+<style>
+.plan-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.plan-table th {
+  text-align: left;
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding: 5px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-weight: 500;
+}
+.plan-table td {
+  padding: 5px 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.78);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+.plan-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.plan-date {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+}
+.plan-day { font-size: 8.5px; color: rgba(255,255,255,0.35); white-space: nowrap; }
+.phase-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.dot-transport { background: #F5C518; }
+.dot-build     { background: #60a5fa; }
+.dot-ready     { background: #4ade80; }
+.dot-event     { background: #a855f7; }
+.dot-breakdown { background: #f87171; }
+.plan-activities { display: flex; flex-direction: column; gap: 3px; }
+.plan-act {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.3;
+}
+.plan-act .phase-dot { margin-top: 4px; }
+
+/* Machinery list */
+.mach-list { display: flex; flex-direction: column; gap: 8px; }
+.mach-item {
+  background: rgba(255,255,255,0.025);
+  border-radius: 3px;
+  padding: 8px 12px;
+}
+.mach-item-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.mach-item-when {
+  font-size: 7.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.32);
+  margin-bottom: 3px;
+}
+.mach-item-desc {
+  font-size: 9.5px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+}
+.warn-box {
+  background: rgba(245,197,24,0.07);
+  border: 1px solid rgba(245,197,24,0.2);
+  border-left: 3px solid #F5C518;
+  border-radius: 0 3px 3px 0;
+  padding: 5px 10px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.4;
+  margin-top: 5px;
+}
+.warn-box strong { color: #F5C518; }
+</style>
+
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Planning</div>
+    <div class="pg-event">Hamburg Derby 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="sec-eyebrow" style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:4px;">Section 05</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:26px;color:#fff;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.12);padding-bottom:6px;margin-bottom:12px;">Planning</div>
+
+    <table class="plan-table">
+      <thead>
+        <tr>
+          <th style="width:72px;">Date</th>
+          <th style="width:72px;">Day</th>
+          <th>Activities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="plan-date">04 / 05</div></td>
+          <td><div class="plan-day">Monday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-transport"></span>Arrival Truck 1</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">06 / 05</div></td>
+          <td><div class="plan-day">Wednesday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-transport"></span>Arrival Truck 2 + crew</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">07 / 05</div></td>
+          <td><div class="plan-day">Thursday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Start build-up</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Unloading of trucks</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Build dressage screen</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Start building LED boarding</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">08 / 05</div></td>
+          <td><div class="plan-day">Friday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Build LED boarding</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Start build Big Screen 1 — Main Arena</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">10 / 05</div></td>
+          <td><div class="plan-day">Sunday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Finish off big screens</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Build screen — Food Court</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Place screen — Kids area</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">11 / 05</div></td>
+          <td><div class="plan-day">Monday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-transport"></span>Last truck + 120 m LED boarding arrives</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>LED perimeter finished by 4:00 PM</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">12 / 05</div></td>
+          <td><div class="plan-day">Tuesday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-ready"></span>Fully operational · Build-up team leaves</div>
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 1 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">13 / 05</div></td>
+          <td><div class="plan-day">Wednesday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 2 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">14 / 05</div></td>
+          <td><div class="plan-day">Thursday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 3 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">15 / 05</div></td>
+          <td><div class="plan-day">Friday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 4 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">16 / 05</div></td>
+          <td><div class="plan-day">Saturday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 5 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">17 / 05</div></td>
+          <td><div class="plan-day">Sunday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 6 · Permanence</div>
+            <div class="plan-act"><span class="phase-dot dot-breakdown"></span>17:00 — Breakdown team arrives</div>
+            <div class="plan-act"><span class="phase-dot dot-breakdown"></span>Partial dismantling of LED sportperimeter</div>
+            <div class="plan-act"><span class="phase-dot dot-breakdown"></span>Dismantling of LED screen — Dressage Arena</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">18 / 05</div></td>
+          <td><div class="plan-day">Monday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-breakdown"></span>Full dismantling</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">19 / 05</div></td>
+          <td><div class="plan-day">Tuesday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-transport"></span>Departure of trucks and breakdown team</div>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display:flex; gap:14px; font-size:8px; color:rgba(255,255,255,0.35);">
+      <span><span class="phase-dot dot-transport" style="display:inline-block;"></span> Transport</span>
+      <span><span class="phase-dot dot-build" style="display:inline-block;"></span> Build-up</span>
+      <span><span class="phase-dot dot-ready" style="display:inline-block;"></span> Operational</span>
+      <span><span class="phase-dot dot-event" style="display:inline-block;"></span> Event</span>
+      <span><span class="phase-dot dot-breakdown" style="display:inline-block;"></span> Breakdown</span>
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Hamburg Derby 2026 — PM Overview</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+<!-- ══════ PAGE 6 — MACHINERY ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Machinery</div>
+    <div class="pg-event">Hamburg Derby 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="sec-eyebrow" style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:4px;">Section 06</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:26px;color:#fff;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.12);padding-bottom:6px;margin-bottom:14px;">Machinery Required</div>
+
+    <div class="mach-list">
+
+      <div class="mach-item">
+        <div class="mach-item-title">2 × Gator (UTV)</div>
+        <div class="mach-item-when">Build-up &amp; Breakdown — Full duration</div>
+        <div class="mach-item-desc">Two units needed for both build-up and breakdown to move materials around the site.</div>
+      </div>
+
+      <div class="mach-item">
+        <div class="mach-item-title">2 × Flat Trailer (Bockmann or equiv.)</div>
+        <div class="mach-item-when">Build-up &amp; Breakdown — Full duration</div>
+        <div class="mach-item-desc">To transport LED boarding crates around the arena. The stronger the better — Bockmann trailers are ideal.</div>
+        <div class="warn-box"><strong>Confirm availability in advance.</strong> This has been an issue in previous years — please confirm on time.</div>
+      </div>
+
+      <div class="mach-item">
+        <div class="mach-item-title">Forklift — 3T Articulated</div>
+        <div class="mach-item-when">Build-up &amp; Breakdown — Full duration</div>
+        <div class="mach-item-desc">Preferably articulated, 3 tonnes. Required for the full duration of build-up and breakdown.</div>
+      </div>
+
+      <div class="mach-item">
+        <div class="mach-item-title">Cherrypicker / Scissor Lift (offroad)</div>
+        <div class="mach-item-when">09–10 / 05 (Build-up) · 18 / 05 (Breakdown)</div>
+        <div class="mach-item-desc">Offroad tires required. Sat &amp; Sun 09–10 May for build-up, and 18 May for breakdown.</div>
+      </div>
+
+      <div class="mach-item">
+        <div class="mach-item-title">Rotating Telescoping Handler</div>
+        <div class="mach-item-when">08–11 / 05 (Build-up) · 17–18 / 05 (Breakdown)</div>
+        <div class="mach-item-desc">Fri–Mon build-up + Sun–Mon breakdown. For Big Screen Main Arena and Dressage Arena screen.</div>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Hamburg Derby 2026 — PM Overview</span>
+    <span>Page 6</span>
+  </div>
+</div>
+
+<!-- ══════ PAGE 7 — HOTEL PLANNING ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Hotel Planning</div>
+    <div class="pg-event">Hamburg Derby 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="sec-eyebrow" style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:4px;">Section 07</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:26px;color:#fff;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.12);padding-bottom:6px;margin-bottom:16px;">Hotel Planning <span style="font-weight:300;color:rgba(255,255,255,0.35);font-size:18px;">(Provisional)</span></div>
+
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:5px 12px;border-bottom:1px solid rgba(255,255,255,0.07);font-weight:500;">Name</th>
+          <th style="text-align:left;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:5px 12px;border-bottom:1px solid rgba(255,255,255,0.07);font-weight:500;">Role</th>
+          <th style="text-align:left;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:5px 12px;border-bottom:1px solid rgba(255,255,255,0.07);font-weight:500;">Hotel nights</th>
+          <th style="text-align:left;font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);padding:5px 12px;border-bottom:1px solid rgba(255,255,255,0.07);font-weight:500;">Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Thibaut Bollen</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">Project Manager</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">06/05 – 19/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 498 10 63 63</td>
+        </tr>
+        <tr style="background:rgba(255,255,255,0.015);">
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Gaëtan Tulleneers</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">LED Technician</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">06/05 – 19/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 470 67 81 71</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Arno Boone</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">LED Technician</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">06/05 – 19/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 472 40 00 47</td>
+        </tr>
+        <tr style="background:rgba(255,255,255,0.015);">
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Tim Boon</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">Truck Driver</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">06/05 – 12/05 &amp; 17–19/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 468 20 09 82</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Jules Ickmans</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">LED Technician</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">06/05 – 11/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 487 43 42 23</td>
+        </tr>
+        <tr style="background:rgba(255,255,255,0.015);">
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Thomas Tielemans</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">LED Technician</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">06/05 – 12/05 &amp; 17–19/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 471 73 60 11</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Joost Rubberecht</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">Technician — Breakdown</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">17–19/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 479 28 04 84</td>
+        </tr>
+        <tr style="background:rgba(255,255,255,0.015);">
+          <td style="padding:8px 12px;font-size:10.5px;color:#fff;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">Jenthe van Maldergem</td>
+          <td style="padding:8px 12px;font-size:9.5px;color:rgba(255,255,255,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">LED Technician</td>
+          <td style="padding:8px 12px;font-size:10px;color:#F5C518;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.04);">17–19/05</td>
+          <td style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.65);font-family:'Courier New',monospace;border-bottom:1px solid rgba(255,255,255,0.04);">+32 483 37 14 95</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Hamburg Derby 2026 — PM Overview</span>
+    <span>Page 7</span>
+  </div>
+</div>
+
+</body>
+</html>
