@@ -966,12 +966,14 @@
           <span class="badge badge-april">APRIL</span>
         </div>
         <div class="info-grid">
-          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">06–20 April</div></div>
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">08–12 April</div></div>
+          <div class="info-item"><div class="info-label">Build-up</div><div class="info-value">2, 6 or 7 Apr (TBC)</div></div>
           <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">30 Mar</div></div>
           <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">13 Apr</div></div>
-          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Jens</div></div>
-          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">05 Apr + 13 Apr</div></div>
-          <div class="info-item"><div class="info-label">Site Visit</div><div class="info-value">Tue 24 Feb</div></div>
+          <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Not needed</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">13 Apr</div></div>
+          <div class="info-item"><div class="info-label">Contact</div><div class="info-value">Nina.Strang@CHIOAACHEN.DE</div></div>
+          <div class="info-item"><div class="info-label">Site Visit</div><div class="info-value">Tue 24 Feb ✅</div></div>
         </div>
       </div>
 
@@ -1857,12 +1859,13 @@ const events = [
   { name: 'Tilleman', date: '2026-04-05', type: 'event' , project: 'Tilleman' },
   // CDI Aachen
   { name: 'CDI Aachen: Transport OP', date: '2026-03-30', type: 'transport' , project: 'CDI Aachen' },
-  { name: 'CDI Aachen', date: '2026-04-06', type: 'event' , project: 'CDI Aachen' },
-  { name: 'CDI Aachen', date: '2026-04-07', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen: Build-up (TBC)', date: '2026-04-06', type: 'build' , project: 'CDI Aachen' },
   { name: 'CDI Aachen', date: '2026-04-08', type: 'event' , project: 'CDI Aachen' },
   { name: 'CDI Aachen', date: '2026-04-09', type: 'event' , project: 'CDI Aachen' },
   { name: 'CDI Aachen', date: '2026-04-10', type: 'event' , project: 'CDI Aachen' },
-  { name: 'CDI Aachen: Transport Back', date: '2026-04-13', type: 'transport' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen', date: '2026-04-11', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen', date: '2026-04-12', type: 'event' , project: 'CDI Aachen' },
+  { name: 'CDI Aachen: Breakdown + Transport Back', date: '2026-04-13', type: 'transport' , project: 'CDI Aachen' },
   // Horses & Dreams
   { name: 'H&D: Build + Transport OP', date: '2026-04-20', type: 'build' , project: 'Horses & Dreams' },
   { name: 'H&D: Build', date: '2026-04-21', type: 'build' , project: 'Horses & Dreams' },
@@ -2236,13 +2239,14 @@ const projects = [
     items: [
       { text: 'Site visit Tue 24 Feb — frame measurements', done: true },
       { text: 'Confirm what is needed after visit', done: true },
-      { text: 'Crew confirmed (Jens)', done: false },
+      { text: 'Crew confirmed (build + breakdown)', done: false },
       { text: 'Power plan', done: true },
       { text: 'Hotels arranged', done: true },
       { text: 'Transport arranged', done: true },
       { text: 'Drivers confirmed', done: false },
+      { text: 'Build-up date confirmed (2, 6 or 7 Apr)', done: false },
       { text: 'Rentman up to date', done: false },
-      { text: 'Contact person on-site', done: false },
+      { text: 'Contact: Nina.Strang@CHIOAACHEN.DE', done: true },
     ]
   },
   {
@@ -2714,8 +2718,9 @@ const crewByProject = {
     note: '📦 Container vertrokken 05/02. Terug 24/03.'
   },
   'CDI Aachen': {
-    perm: { dates: '06–20 Apr', crew: ['Jens Messely'], role: 'LED Tech' },
-    note: '📍 Site visit 24/02 — details na bezoek te bevestigen.'
+    build:     { dates: '2, 6 or 7 Apr (TBC)', crew: [], role: 'LED Tech', urgent: false },
+    breakdown: { dates: '13 Apr', crew: [], role: 'LED Tech' },
+    note: '📍 Permanence not needed. Contact: Nina.Strang@CHIOAACHEN.DE'
   },
   'Horses & Dreams': {
     transport_op:    { dates: '18–20 Apr', crew: ['Tim Boon', 'Yves Mertens'], role: 'Chauffeur CE' },
