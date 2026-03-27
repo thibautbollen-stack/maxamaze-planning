@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Horses & Dreams 2026 — Project Manager Overview</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;1,700;1,800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: #000;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@page { size: A4; margin: 0; }
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  position: relative;
+  background: #000;
+  page-break-after: always;
+  overflow: hidden;
+}
+.page:last-child { page-break-after: avoid; }
+
+/* ════ COVER ════ */
+.cover {
+  height: 297mm;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+.cover-top {
+  padding: 34px 40px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.brand-wordmark {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: 4px;
+  color: #fff;
+}
+.brand-wordmark sup { font-size: 9px; vertical-align: super; }
+.doc-type {
+  font-size: 8px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  text-align: right;
+  line-height: 2;
+}
+.cover-body {
+  flex: 1;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cover-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 14px;
+}
+.cover-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 76px;
+  line-height: 0.88;
+  color: #fff;
+  text-transform: uppercase;
+}
+.cover-year {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 76px;
+  line-height: 0.88;
+  color: rgba(255,255,255,0.11);
+}
+.cover-line {
+  width: 48px;
+  height: 2px;
+  background: #fff;
+  margin: 26px 0;
+}
+.cover-meta { display: flex; gap: 36px; }
+.meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-size: 7.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.meta-value { font-size: 12px; font-weight: 600; color: #fff; }
+.cover-footer {
+  padding: 16px 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ════ CONTENT PAGES ════ */
+.content-page { background: #0a0a0a; }
+
+.pg-header {
+  background: #000;
+  padding: 10px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pg-brand {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.85);
+}
+.pg-brand sup { font-size: 7px; vertical-align: super; }
+.pg-section { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+.pg-event { font-size: 8px; color: rgba(255,255,255,0.2); }
+
+.pg-body { padding: 18px 28px 22px; }
+.pg-footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 9px 28px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5px;
+  color: rgba(255,255,255,0.18);
+}
+
+/* ── SECTION ── */
+.sec-eyebrow {
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 4px;
+}
+.sec-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 26px;
+  color: #fff;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+}
+
+/* ── SPEC ROWS ── */
+.specs { display: flex; flex-direction: column; gap: 1px; margin-bottom: 12px; }
+.spec {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 12px;
+  background: rgba(255,255,255,0.022);
+}
+.sk {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+}
+.sv { font-size: 10.5px; font-weight: 600; color: #fff; text-align: right; }
+.sv.y { color: #F5C518; }
+.sv.g { color: #4ade80; }
+.sv.r { color: #f87171; }
+
+/* ── NOTE / WARN ── */
+.note {
+  background: rgba(245,197,24,0.05);
+  border-left: 2px solid rgba(245,197,24,0.5);
+  padding: 6px 11px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.note strong { color: #F5C518; }
+.note-blue {
+  background: rgba(96,165,250,0.05);
+  border-left: 2px solid rgba(96,165,250,0.5);
+  padding: 6px 11px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.note-blue strong { color: #60a5fa; }
+
+/* ── TWO COL ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+
+/* ── CREW TABLE ── */
+.crew-table { width: 100%; border-collapse: collapse; }
+.crew-table th {
+  text-align: left;
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding: 5px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-weight: 500;
+}
+.crew-table td {
+  padding: 7px 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.78);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+.crew-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.crew-name { font-size: 11px; font-weight: 600; color: #fff; }
+.crew-role { font-size: 8.5px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.hl { color: #F5C518; font-weight: 600; }
+
+/* ── PLANNING ── */
+.plan-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.plan-table th {
+  text-align: left;
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding: 5px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-weight: 500;
+}
+.plan-table td {
+  padding: 5px 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.78);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+.plan-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.plan-date {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+}
+.plan-day { font-size: 8.5px; color: rgba(255,255,255,0.35); white-space: nowrap; }
+.phase-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.dot-transport { background: #F5C518; }
+.dot-build     { background: #60a5fa; }
+.dot-ready     { background: #4ade80; }
+.dot-event     { background: #a855f7; }
+.dot-breakdown { background: #f87171; }
+.plan-activities { display: flex; flex-direction: column; gap: 3px; }
+.plan-act {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.3;
+}
+.plan-act .phase-dot { margin-top: 4px; }
+
+/* ── POWER TABLE ── */
+.power-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.power-table th {
+  text-align: left;
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding: 5px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-weight: 500;
+}
+.power-table td {
+  padding: 7px 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.78);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.power-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.amp {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 16px;
+  color: #F5C518;
+}
+
+/* ── MACH ── */
+.mach-list { display: flex; flex-direction: column; gap: 8px; }
+.mach-item {
+  background: rgba(255,255,255,0.025);
+  border-radius: 3px;
+  padding: 8px 12px;
+}
+.mach-item-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.mach-item-when {
+  font-size: 7.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.32);
+  margin-bottom: 3px;
+}
+.mach-item-desc {
+  font-size: 9.5px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+}
+
+/* ── CHECKLIST ── */
+.checklist { display: flex; flex-direction: column; gap: 4px; }
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+.check-item.done { background: rgba(74,222,128,0.05); color: rgba(255,255,255,0.55); }
+.check-item.open { background: rgba(248,113,113,0.06); color: rgba(255,255,255,0.8); }
+.check-item.warn { background: rgba(245,197,24,0.06); color: rgba(255,255,255,0.8); }
+.check-dot {
+  width: 14px; height: 14px;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.check-dot.done { background: #4ade80; color: #000; }
+.check-dot.open { background: #f87171; color: #fff; }
+.check-dot.warn { background: #F5C518; color: #000; }
+</style>
+</head>
+<body>
+
+<!-- ══════ PAGE 1 — COVER ══════ -->
+<div class="page cover">
+  <div class="cover-top">
+    <div class="brand-wordmark">MAXAMAZE<sup>™</sup></div>
+    <div class="doc-type">
+      Project Manager Overview<br>
+      Confidential — Internal Use Only
+    </div>
+  </div>
+
+  <div class="cover-body">
+    <div class="cover-eyebrow">Equestrian Event · Hagen a.T.W. · Germany</div>
+    <div class="cover-title">Horses<br>&amp; Dreams</div>
+    <div class="cover-year">2026</div>
+    <div class="cover-line"></div>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <div class="meta-label">Event dates</div>
+        <div class="meta-value">22 – 26 April</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Project period</div>
+        <div class="meta-value">20 – 27 April</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Equipment</div>
+        <div class="meta-value">Set 1 + Set 2 + Arch</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Rentman</div>
+        <div class="meta-value">#1003</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">PM</div>
+        <div class="meta-value">Thibaut Bollen</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Generated by Rocky · 09/03/2026</span>
+    <span>thibaut@maxamaze.com</span>
+  </div>
+</div>
+
+
+<!-- ══════ PAGE 2 — PROJECT INFO + CREW ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Project Overview</div>
+    <div class="pg-event">Horses &amp; Dreams 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="sec-eyebrow">Section 01</div>
+    <div class="sec-title">Project Details</div>
+
+    <div class="two-col">
+      <div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Event</span><span class="sv">Horses &amp; Dreams 2026</span></div>
+          <div class="spec"><span class="sk">Location</span><span class="sv">Hagen a.T.W., Germany</span></div>
+          <div class="spec"><span class="sk">Venue</span><span class="sv">PSI / Paul Schockemöhle Sporthorses</span></div>
+          <div class="spec"><span class="sk">Event dates</span><span class="sv y">22 – 26 April 2026</span></div>
+          <div class="spec"><span class="sk">Project period</span><span class="sv">20 – 27 April 2026</span></div>
+          <div class="spec"><span class="sk">Rentman ID</span><span class="sv">1003 (#992)</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="specs">
+          <div class="spec"><span class="sk">Equipment</span><span class="sv">Set 1 + Set 2 + Arch</span></div>
+          <div class="spec"><span class="sk">Trucks</span><span class="sv">2 trucks · stay on site</span></div>
+          <div class="spec"><span class="sk">Driver</span><span class="sv">Yves Mertens (20 &amp; 27 Apr)</span></div>
+          <div class="spec"><span class="sk">On-site contact</span><span class="sv">Carine Tollefsen</span></div>
+          <div class="spec"><span class="sk">Contact email</span><span class="sv" style="font-size:9px;">c.tollefsen@psi-sporthorses.de</span></div>
+          <div class="spec"><span class="sk">Hotels</span><span class="sv g">Booked ✓</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-eyebrow" style="margin-top:16px;">Section 02</div>
+    <div class="sec-title">Crew</div>
+
+    <table class="crew-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Period</th>
+          <th>Email</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="crew-name">Thibaut Bollen</div><div class="crew-role">Project Manager</div></td>
+          <td style="color:rgba(255,255,255,0.55);">PM · Permanence</td>
+          <td class="hl">20 – 27 Apr</td>
+          <td style="font-size:9px;color:rgba(255,255,255,0.5);">thibaut@maxamaze.com</td>
+          <td style="font-size:9px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.5);">+32 498 10 63 63</td>
+        </tr>
+        <tr>
+          <td><div class="crew-name">Jens Messely</div><div class="crew-role">LED Technician · Permanence</div></td>
+          <td style="color:rgba(255,255,255,0.55);">LED Tech · Permanence</td>
+          <td class="hl">20 – 27 Apr</td>
+          <td style="font-size:9px;color:rgba(255,255,255,0.5);">jens@maxamaze.com</td>
+          <td style="font-size:9px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.5);">+32 483 517 342</td>
+        </tr>
+        <tr>
+          <td><div class="crew-name">Gaëtan Tulleneers</div><div class="crew-role">LED Technician · Build &amp; Breakdown</div></td>
+          <td style="color:rgba(255,255,255,0.55);">LED Tech</td>
+          <td style="color:rgba(255,255,255,0.6);">20 – 21 Apr · 27 Apr</td>
+          <td style="font-size:9px;color:rgba(255,255,255,0.5);">—</td>
+          <td style="font-size:9px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.5);">+32 470 678 171</td>
+        </tr>
+        <tr>
+          <td><div class="crew-name">Arno Vanbever</div><div class="crew-role">LED Technician · Build &amp; Breakdown</div></td>
+          <td style="color:rgba(255,255,255,0.55);">LED Tech</td>
+          <td style="color:rgba(255,255,255,0.6);">20 – 21 Apr · 27 Apr</td>
+          <td style="font-size:9px;color:rgba(255,255,255,0.5);">—</td>
+          <td style="font-size:9px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.5);">+32 477 897 526</td>
+        </tr>
+        <tr>
+          <td><div class="crew-name">Yves Mertens</div><div class="crew-role">Truck Driver CE</div></td>
+          <td style="color:rgba(255,255,255,0.55);">Driver</td>
+          <td style="color:rgba(255,255,255,0.6);">20 Apr (out) · 27 Apr (return)</td>
+          <td style="font-size:9px;color:rgba(255,255,255,0.5);">—</td>
+          <td style="font-size:9px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.5);">+32 491 106 041</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Horses &amp; Dreams 2026 — PM Overview</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+
+<!-- ══════ PAGE 3 — PLANNING ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Planning</div>
+    <div class="pg-event">Horses &amp; Dreams 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="sec-eyebrow">Section 03</div>
+    <div class="sec-title">Planning &amp; Timeline</div>
+
+    <table class="plan-table">
+      <thead>
+        <tr>
+          <th style="width:72px;">Date</th>
+          <th style="width:80px;">Day</th>
+          <th>Activities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="plan-date">20 / 04</div></td>
+          <td><div class="plan-day">Monday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-transport"></span>Arrival of two trucks on site</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>08:00 — Build-up Main Arena</div>
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Build-up Dressage Arena</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">21 / 04</div></td>
+          <td><div class="plan-day">Tuesday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-build"></span>Wiring of LED perimeter</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">22 / 04</div></td>
+          <td><div class="plan-day">Wednesday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-ready"></span>Fully operational</div>
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 1 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">23 / 04</div></td>
+          <td><div class="plan-day">Thursday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 2 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">24 / 04</div></td>
+          <td><div class="plan-day">Friday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 3 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">25 / 04</div></td>
+          <td><div class="plan-day">Saturday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 4 · Permanence</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">26 / 04</div></td>
+          <td><div class="plan-day">Sunday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-event"></span>🏆 EVENT Day 5 · Permanence</div>
+            <div class="plan-act"><span class="phase-dot dot-breakdown"></span>18:00 — Start breakdown</div>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="plan-date">27 / 04</div></td>
+          <td><div class="plan-day">Monday</div></td>
+          <td><div class="plan-activities">
+            <div class="plan-act"><span class="phase-dot dot-breakdown"></span>Remove LED perimeter</div>
+            <div class="plan-act"><span class="phase-dot dot-transport"></span>Return transport — Yves Mertens</div>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display:flex; gap:14px; font-size:8px; color:rgba(255,255,255,0.35); margin-top:6px;">
+      <span><span class="phase-dot dot-transport" style="display:inline-block;"></span> Transport</span>
+      <span><span class="phase-dot dot-build" style="display:inline-block;"></span> Build-up</span>
+      <span><span class="phase-dot dot-ready" style="display:inline-block;"></span> Operational</span>
+      <span><span class="phase-dot dot-event" style="display:inline-block;"></span> Event</span>
+      <span><span class="phase-dot dot-breakdown" style="display:inline-block;"></span> Breakdown</span>
+    </div>
+
+    <div class="note" style="margin-top:14px;">
+      <strong>⚠️ Pending:</strong> Approval of extra element — if confirmed, build-up starts half a day earlier. Reschedule crew &amp; transport accordingly.
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Horses &amp; Dreams 2026 — PM Overview</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+
+<!-- ══════ PAGE 4 — POWER PLAN ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Power Plan</div>
+    <div class="pg-event">Horses &amp; Dreams 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="sec-eyebrow">Section 04</div>
+    <div class="sec-title">Power Requirements</div>
+
+    <!-- Power Plan 1 -->
+    <div style="margin-bottom:18px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;font-size:18px;color:#fff;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Power Plan 1 — LED Boarding &amp; Screen</div>
+      <table class="power-table">
+        <thead>
+          <tr>
+            <th>Circuit</th>
+            <th>Amperage</th>
+            <th>Type</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Circuit 1</td>
+            <td><span class="amp">63A</span></td>
+            <td>3-phase</td>
+            <td style="color:rgba(255,255,255,0.5);">LED Boarding / Screen</td>
+          </tr>
+          <tr>
+            <td>Circuit 2</td>
+            <td><span class="amp">32A</span></td>
+            <td>3-phase</td>
+            <td style="color:rgba(255,255,255,0.5);">LED Boarding / Screen</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Power Plan 2 -->
+    <div style="margin-bottom:18px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:700;font-size:18px;color:#fff;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Power Plan 2 — LED Perimeter</div>
+      <table class="power-table">
+        <thead>
+          <tr>
+            <th>Circuit</th>
+            <th>Amperage</th>
+            <th>Type</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Circuit 1</td>
+            <td><span class="amp">63A</span></td>
+            <td>3-phase</td>
+            <td style="color:rgba(255,255,255,0.5);">LED Perimeter</td>
+          </tr>
+          <tr>
+            <td>Circuit 2</td>
+            <td><span class="amp">63A</span></td>
+            <td>3-phase</td>
+            <td style="color:rgba(255,255,255,0.5);">LED Perimeter</td>
+          </tr>
+          <tr>
+            <td>Circuit 3</td>
+            <td><span class="amp">63A</span></td>
+            <td>3-phase</td>
+            <td style="color:rgba(255,255,255,0.5);">LED Perimeter</td>
+          </tr>
+          <tr>
+            <td>Circuit 4</td>
+            <td><span class="amp">63A</span></td>
+            <td>3-phase</td>
+            <td style="color:rgba(255,255,255,0.5);">LED Perimeter</td>
+          </tr>
+          <tr>
+            <td>Circuit 5</td>
+            <td><span class="amp">63A</span></td>
+            <td>3-phase</td>
+            <td style="color:rgba(255,255,255,0.5);">LED Perimeter</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <strong>Total power demand:</strong> Plan 1: 63A + 32A · Plan 2: 5 × 63A — All circuits 3-phase. Confirm availability and cable routing with on-site technical team upon arrival.
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Horses &amp; Dreams 2026 — PM Overview</span>
+    <span>Page 4</span>
+  </div>
+</div>
+
+
+<!-- ══════ PAGE 5 — HOTEL + CHECKLIST ══════ -->
+<div class="page content-page">
+  <div class="pg-header">
+    <div class="pg-brand">MAXAMAZE<sup>™</sup></div>
+    <div class="pg-section">Hotel &amp; Checklist</div>
+    <div class="pg-event">Horses &amp; Dreams 2026</div>
+  </div>
+  <div class="pg-body">
+
+    <div class="sec-eyebrow">Section 05</div>
+    <div class="sec-title">Hotel Planning</div>
+
+    <table class="crew-table" style="margin-bottom:22px;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Hotel nights</th>
+          <th>Email</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="crew-name">Thibaut Bollen</div></td>
+          <td style="color:rgba(255,255,255,0.55);">Project Manager</td>
+          <td class="hl">20 / 04 – 27 / 04</td>
+          <td style="font-size:9px;color:rgba(255,255,255,0.5);">thibaut@maxamaze.com</td>
+          <td style="font-size:9px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.5);">+32 498 10 63 63</td>
+        </tr>
+        <tr>
+          <td><div class="crew-name">Jens Messely</div></td>
+          <td style="color:rgba(255,255,255,0.55);">LED Technician</td>
+          <td class="hl">20 / 04 – 27 / 04</td>
+          <td style="font-size:9px;color:rgba(255,255,255,0.5);">jens@maxamaze.com</td>
+          <td style="font-size:9px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.5);">+32 483 517 342</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="sec-eyebrow">Section 06</div>
+    <div class="sec-title">Project Checklist</div>
+
+    <div class="checklist">
+      <div class="check-item done"><div class="check-dot done">✓</div>Crew confirmed (Rentman)</div>
+      <div class="check-item done"><div class="check-dot done">✓</div>Hotels booked — Thibaut &amp; Jens (20–27 Apr)</div>
+      <div class="check-item done"><div class="check-dot done">✓</div>Transport arranged — Set 1 + Set 2 + Arch · Yves Mertens (20 &amp; 27 Apr)</div>
+      <div class="check-item done"><div class="check-dot done">✓</div>Driver confirmed — Yves Mertens</div>
+      <div class="check-item done"><div class="check-dot done">✓</div>Rentman up to date</div>
+      <div class="check-item done"><div class="check-dot done">✓</div>On-site contact — Carine Tollefsen · c.tollefsen@psi-sporthorses.de</div>
+      <div class="check-item open"><div class="check-dot open">✗</div>Power plan sent to on-site technical team</div>
+      <div class="check-item open"><div class="check-dot open">✗</div>Hotel name to be noted</div>
+      <div class="check-item warn"><div class="check-dot warn">!</div>⏳ Approval extra element pending — if confirmed: reschedule build-up + crew + transport</div>
+    </div>
+
+    <div class="note-blue" style="margin-top:14px;">
+      <strong>ℹ️ Next event after H&amp;D:</strong> CSI Ermelo starts 30 Apr — trucks from Hagen need to return by 28 Apr at the latest for reloading.
+    </div>
+
+  </div>
+  <div class="pg-footer">
+    <span>MAXAMAZE™ — Confidential</span>
+    <span>Horses &amp; Dreams 2026 — PM Overview</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+</body>
+</html>
