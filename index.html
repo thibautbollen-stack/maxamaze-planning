@@ -981,11 +981,11 @@
           <span class="badge badge-april">APRIL</span>
         </div>
         <div class="info-grid">
-          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">22–26 April</div></div>
-          <div class="info-item"><div class="info-label">Build</div><div class="info-value">20–21 Apr</div></div>
-          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">27 Apr</div></div>
-          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">20 Apr — Yves ✅</div></div>
-          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">27 Apr — Yves ✅</div></div>
+          <div class="info-item"><div class="info-label">Event</div><div class="info-value highlight">29 Apr – 03 May</div></div>
+          <div class="info-item"><div class="info-label">Build</div><div class="info-value">27–28 Apr</div></div>
+          <div class="info-item"><div class="info-label">Breakdown</div><div class="info-value">03–04 May</div></div>
+          <div class="info-item"><div class="info-label">Transport Op</div><div class="info-value">27 Apr 03:00 — Yves (T1) + Tim (T2) ✅</div></div>
+          <div class="info-item"><div class="info-label">Transport Terug</div><div class="info-value">04 May — Set 1→Opwijk · Set 2→Ermelo</div></div>
           <div class="info-item"><div class="info-label">Set</div><div class="info-value">1 & 2 + Arch</div></div>
           <div class="info-item"><div class="info-label">Permanence</div><div class="info-value">Thibaut & Jens</div></div>
           <div class="info-item"><div class="info-label">Contact</div><div class="info-value">c.tollefsen@psi-sporthorses.de</div></div>
@@ -995,6 +995,7 @@
           <span class="crew-tag">Jens</span><span class="crew-tag">Thibaut</span>
         </div>
         <div class="notes-pill">✅ Standard planning confirmed — no extra element</div>
+        <div class="notes-pill" style="border-left-color:#4ecb71;">⚡ Power plan received: Indoor 63A+32A · Outdoor Jumping 5×63A</div>
       </div>
 
     </div>
@@ -1044,6 +1045,7 @@
           <span class="crew-tag">Thibaut</span><span class="crew-tag">Gaëtan</span>
           <span class="crew-tag">Jens</span><span class="crew-tag">Lucas de Bock ✅</span>
         </div>
+        <div class="notes-pill" style="border-left-color:#4ecb71;">🏨 Hotel confirmed (10 Apr) · stagehands.de booked for breakdown ✅</div>
       </div>
 
       <div class="card" data-project="Hamburg Derby">
@@ -1069,7 +1071,7 @@
           <span class="crew-tag">stagair</span><span class="crew-tag">Jules</span><span class="crew-tag">Joost (BK)</span>
         </div>
         <div class="notes-pill">🚛 3 trucks — loadlists to make. stagehands.de for build/breakdown.</div>
-        <div class="notes-pill" style="border-left-color:#6ab0d4;">🔷 <strong>Optie</strong> — Anna van Schafhof: vergroting dressuurscherm 10×7m of 12×7m · inhuur Nicola Ledvision · offerte in opmaak</div>
+        <div class="notes-pill" style="border-left-color:#e05252;">❌ <strong>Cancelled</strong> — Ledvision quote cancelled (10 Apr)</div>
       </div>
 
       <div class="card" data-project="CSIO Aachen">
@@ -2248,7 +2250,7 @@ const projects = [
       { text: 'Transport arranged (Set 1 & 2 + Arch)', done: true },
       { text: 'Drivers confirmed (Yves Mertens 20 & 27 Apr)', done: true },
       { text: 'Rentman up to date', done: true },
-      { text: 'Power plan', done: false },
+      { text: 'Power plan ✅ Indoor 63A+32A · Outdoor 5×63A', done: true },
       { text: 'Hotel name — note which hotel', done: false },
       { text: 'Contact: c.tollefsen@psi-sporthorses.de', done: true },
       { text: 'Extra element: not happening — standard planning confirmed ✅', done: true },
@@ -2259,9 +2261,9 @@ const projects = [
     month: 'May',
     items: [
       { text: 'Crew confirmed (in Rentman)', done: true },
-      { text: 'Power plan', done: false },
-      { text: 'Hotels arranged', done: false },
-      { text: 'Drivers confirmed', done: false },
+      { text: 'Power plan ✅ (confirmed 10 Apr)', done: true },
+      { text: 'Hotels arranged', done: false, urgent: true },
+      { text: 'Drivers confirmed ✅ (confirmed 10 Apr)', done: true },
       { text: 'Contact person on-site → Walter Makker · Wivaldi · +31 648 331 431', done: true },
     ]
   },
@@ -2272,9 +2274,9 @@ const projects = [
       { text: 'Crew confirmed (in Rentman)', done: true },
       { text: '⏳ Truck driver build-up (1 chauffeur CE, 03-04 May) — pending', done: false },
       { text: 'Send permanence info to Jens', done: false },
-      { text: 'Send hotel request', done: false },
+      { text: 'Hotel request ✅ (confirmed 10 Apr)', done: true },
       { text: 'Send power plan', done: false },
-      { text: 'Breakdown crew (stagehands.de 10-11 May)', done: false },
+      { text: 'Breakdown crew (stagehands.de 10-11 May) ✅ booked', done: true },
       { text: 'Contact person on-site', done: false },
     ]
   },
@@ -2289,7 +2291,7 @@ const projects = [
       { text: 'Make loadlist Truck 2 (from office)', done: false },
       { text: 'Make loadlist Truck 3 (from Bourg)', done: false },
       { text: 'Send power plan', done: false },
-      { text: 'Send hotel request', done: false },
+      { text: 'Hotel request forwarded (10 Apr) — awaiting confirmation', done: false, urgent: true },
       { text: 'Book stagehands.de build-up + breakdown', done: false },
       { text: 'Contact person on-site', done: false },
     ]
