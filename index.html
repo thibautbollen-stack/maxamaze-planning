@@ -398,6 +398,7 @@
   }
 
   .cal-day.empty { background: transparent; border-color: transparent; }
+  .cal-day.past { opacity: 0.38; }
   .cal-day.today { border-color: var(--gold); }
 
   .cal-day-num {
@@ -2110,8 +2111,9 @@ const events = [
 // ─── CALENDAR ───
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-let currentYear = 2026;
-let currentMonth = 2; // 0-indexed, so 2 = March
+const _now = new Date();
+let currentYear = _now.getFullYear();
+let currentMonth = _now.getMonth();
 
 function initCalendar() {
   renderCalendar(currentYear, currentMonth);
@@ -2156,6 +2158,8 @@ function renderCalendar(year, month) {
     cell.className = 'cal-day';
     const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
     if (isToday) cell.classList.add('today');
+    const isPast = new Date(year, month, day) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    if (isPast) cell.classList.add('past');
 
     const dayNum = document.createElement('div');
     dayNum.className = 'cal-day-num';
